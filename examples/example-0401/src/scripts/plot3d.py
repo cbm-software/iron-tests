@@ -11,7 +11,7 @@ from matplotlib import animation
 import sys
 import os
 
-def animate(t):
+def animate(t, create_image=False):
   global foldername, image_name
   ax1.clear()
   
@@ -44,11 +44,11 @@ def animate(t):
   ax1.set_zlim(-80,30)
   plt.title("t = "+str(t*0.005))
   
-  if t % 100 == 0:
+  if t % 100 == 0 or create_image:
     filenamepng = image_name+"_t"+str(t)+".png"
     filenameeps = image_name+"_t"+str(t)+".eps"
     plt.savefig(filenamepng)
-    print "saved to {}".format(filenamepng)
+    print "Image saved to {}".format(filenamepng)
     os.system("convert "+filenamepng+" "+filenameeps)
       
 # get folder name from command line argument
@@ -60,6 +60,11 @@ if len(sys.argv) > 1:
 if foldername[-1] != "/":
   foldername = foldername + "/"
 
+# get kind (fast or big)
+kind = 'fast'
+if len(sys.argv) > 2:
+  kind = sys.argv[2]
+
 # create file names
 image_name = "{}".format(foldername).replace("/", "_")
 animation_name = "{}.mp4".format(foldername).replace("/", "_")
@@ -68,13 +73,24 @@ animation_name = "{}.mp4".format(foldername).replace("/", "_")
 fig = plt.figure(1)
 ax1 = fig.gca(projection='3d')
 plt.tight_layout()
-animate(0)
 
-anim = animation.FuncAnimation(fig, animate,
-                               frames=1000, interval=20)
+# create image of first time step
+animate(0, create_image=True)
+
+# create image of last time step
+files = exnode_reader.get_exnode_files(foldername)
+animate(len(files)-1, create_image=True)
+
 # save to animation
-anim.save(animation_name)
-print "saved to {}".format(animation_name)
+if kind == 'fast':
+  print "Do not save mp4 animation because of 'fast' target."
+else:
+  # call animator to create mp4 animation
+  anim = animation.FuncAnimation(fig, animate,
+                                 frames=1000, interval=20)
+  anim.save(animation_name)
+  print "Animation saved to {}".format(animation_name)
+
 #plt.show()
 
 

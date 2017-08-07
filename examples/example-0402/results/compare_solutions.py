@@ -17,7 +17,6 @@ print ""
 # tolerance used to check numerical solution
 tol_matlab = 12345678    # matlab solution differs from iron solution
 tol_iron = 0.05
-tol_iron = 0.3			# result of parallel execution differ somehow
 
 # number of elements in each coordinate direction for different refinement levels
 NumberOfElements = np.zeros((1,2), dtype=int)
@@ -35,8 +34,7 @@ for [nx,i,s,p] in [[24,1,0,1], [24,1,1,1], [10,1,0,1], [24,1,0,2], [24,1,0,8], [
   
   #print "case ",[nx,i,s,p]
   ny = nx
-  for t in [0.01, 0.1, 0.2, 1, 2,3]:
-    NumberOfTests += 1
+  for t in [0.01, 0.1, 0.2, 1, 2, 3]:
     #print "t=",t
     
     ####################################################################
@@ -72,7 +70,8 @@ for [nx,i,s,p] in [[24,1,0,1], [24,1,1,1], [10,1,0,1], [24,1,0,2], [24,1,0,8], [
     iron_data = exnode_reader.parse_file(foldername+iron_filename, [["Vm", 1]])   # extract field Vm, component 1
     
     if iron_data is None:
-      print "Warning! no data available for:\n"+status
+      if False:   # do not warn, when the iron file is not present, silently skip test. This may occur in the 'fast' target    
+        print "Warning! no current iron data available for:\n"+status
       continue
     
     # determine which iron file would produce the least l2 error to the current matlab file
@@ -130,28 +129,34 @@ for [nx,i,s,p] in [[24,1,0,1], [24,1,1,1], [10,1,0,1], [24,1,0,2], [24,1,0,8], [
     
     # matlab reference - iron
     if matlab_data is not None:
+      NumberOfTests += 1
       l2diff_matlab_iron = np.linalg.norm(matlab_data-iron_data) / np.linalg.norm(matlab_data)
       
+      status = foldername+iron_filename+"       | Matlab   - Iron |_2 = "+str(l2diff_matlab_iron)+"\n"
       if l2diff_matlab_iron > tol_matlab:
-        status = foldername+iron_filename+"       | Matlab   - Iron |_2 = "+str(l2diff_matlab_iron)+"\n"
         print status
         if (NumberOfFailedTests == 0):
             failedtests_file.write("Failed tests:\n")
         failedtests_file.write(status)
         NumberOfFailedTests += 1
+      else:
+        print "SUCCESS: ",status
     
     # iron reference - iron
     if iron_reference_data is not None:
+      NumberOfTests += 1
       
       l2diff_iron_iron = np.linalg.norm(iron_reference_data-iron_data) / np.linalg.norm(iron_data)
       
+      status = foldername+iron_filename+"       | Iron   - Iron |_2 = "+str(l2diff_iron_iron)+"\n"
       if l2diff_iron_iron > tol_iron:
-        status = foldername+iron_filename+"       | Iron   - Iron |_2 = "+str(l2diff_iron_iron)+"\n"
         print status
         if (NumberOfFailedTests == 0):
             failedtests_file.write("Failed tests:\n")
         failedtests_file.write(status)
         NumberOfFailedTests += 1
+      else:
+        print "SUCCESS:",status
     
 if (NumberOfFailedTests == 0):
   failedtests_file.write("No failed tests.\n")

@@ -1,22 +1,45 @@
 default:
 	make clean
 	mkdir -p results/current_run
-	make debug
-	make release
+	make release-fast
 	make compare
-	make create-figures
+	make visualize-fast
 
-debug:
-	bash run_example.sh debug
+fast:
+	make
 
-release:
-	bash run_example.sh release
+big:
+	make clean 
+	make release-big
+	make compare
+	make visualize-big
+
+release: release-fast
+
+debug: debug-fast
+
+create-figures: visualize-fast
+
+debug-fast:
+	bash run_example.sh debug fast
+
+release-fast:
+	bash run_example.sh release fast
+
+debug-big:
+	bash run_example.sh debug big
+
+release-big:
+	bash run_example.sh release big
 
 compare:
 	cd results; python compare_solutions.py
 
-create-figures:
-	cd results; bash create_animations.sh
+visualize-fast:
+	cd results; bash create_animations.sh fast
+
+visualize-big:
+	cd results; bash create_animations.sh big
 
 clean:
 	rm -rf *.diag *.log *.aux *.out debug/ release/
@@ -24,3 +47,6 @@ clean:
 	rm -rf results/failed.tests results/results.summary
 	rm -f  failed.tests results.summary
 	rm -rf doc/figures/*-eps-converted-to.pdf
+	rm -rf Time*
+	rm -rf tmp*
+	rm -rf Monodomain*

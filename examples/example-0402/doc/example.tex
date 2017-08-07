@@ -80,51 +80,65 @@ Material parameters:
 %
 \verbatiminput{examples/example-0402/results/results.summary}
 \verbatiminput{examples/example-0402/results/failed.tests}
-%
-%\begin{figure}[ht]
-%  \centering   
-%  
-% the following works in Adobe Acrobat Reader with \usepackage{movie15}
-%\includemovie[     
-%  poster,
-%  text={\small(Loading)}
-%]{6cm}{6cm}{examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p1_.mp4}
-%
-%
-% the following works in Adobe Acrobat Reader with \usepackage{media9}
-%  \includemedia[
-%    width=0.9\linewidth,
-%    height=0.9\linewidth,
-%    activate=pageopen,
-%    addresource=examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p1_.mp4,2
-%    flashvars={source=examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p1_.mp4}
-%  ]{}{VPlayer.swf}
-%  \caption{Results movie, $24 \times 24$ elements (only works in certain pdf viewers, e.g. Adobe Acrobat Reader)}
-%  \label{example-0402-current-run0-fig}
-%\end{figure}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p1__t200.png} 
-  \caption{Results, $24\times 24$ elements, $t=200$}
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n10x10_i1_s0_p1__t20.png}
+  \caption{Result of scenario with $10 \times 10$ elements, $t=20$, direct solver, $p=1$ process}
   \label{example-0402-current-run1-fig}
 \end{figure}
 
 \begin{figure}[ht]
-  \centering 
-  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n10x10_i1_s0_p1__t0.png} 
-  \caption{Results, $10 \times 10$ elements}
+  \centering
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p1__t20.png}
+  \caption{Result of scenario with $24 \times 24$ elements, $t=20$, direct solver, $p=1$ process}
   \label{example-0402-current-run2-fig}
 \end{figure}
 
-You get a better understanding of the solutions by looking at the automatically generated animations in \verb|iron-tests/examples/example-0402/doc/figures|.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s1_p1__t20.png}
+  \caption{Result of scenario with $24 \times 24$ elements, $t=20$, iterative solver, $p=1$ process}
+  \label{example-0402-current-run3-fig}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p2__t41.png}
+  \caption{Result of scenario with $24 \times 24$ elements, $t=20$, iterative solver, $p=2$ processes}
+  \label{example-0402-current-run4-fig}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n24x24_i1_s0_p8__t167.png}
+  \caption{Result of scenario with $24 \times 24$ elements, $t=20$, iterative solver, $p=8$ processes}
+  \label{example-0402-current-run5-fig}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n2x2_i1_s0_p1__t20.png}
+  \caption{Result of scenario with $2 \times 2$ elements, $t=20$, direct solver, $p=1$ process}
+  \label{example-0402-current-run6-fig}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\columnwidth]{examples/example-0402/doc/figures/current_run_l1x1_n2x2_i1_s0_p2__t41.png}
+  \caption{Result of scenario with $2 \times 2$ elements, $t=20$, direct solver, $p=2$ processes}
+  \label{example-0402-current-run7-fig}
+\end{figure}
+
+With the 'big' target there will be animations created. You get a better understanding of the solutions by looking at them in \verb|iron-tests/examples/example-0402/doc/figures|.
 
 %
 %===============================================================================
 %
 \subsubsection{Validation}
 %
-We compare with a Matlab implementation.
+We compare with reference iron files of Aug. 2017. See also the notes on \verb|example-0401|.
+
 %
 %===============================================================================
 %===============================================================================

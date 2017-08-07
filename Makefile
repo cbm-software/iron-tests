@@ -21,6 +21,7 @@ run-tests-release:
 	cd examples && bash run_examples.sh release
 
 collect-results:
+	cd examples && bash run_examples.sh compare
 	cd examples; bash collect_results.sh
 
 create-figures:
