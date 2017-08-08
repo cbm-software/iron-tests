@@ -7,7 +7,7 @@ for ($i = 100 ; $i < 1001 ; $i=$i+100)
 }
 
 #Read in the element description
-gfx read elements results/current_run/2D_MeshRefinementLevel_003/Example.part0.exelem;
+gfx read elements results/reference/iron//2D_MeshRefinementLevel_003/Example.part0.exelem;
 
 gfx define field Velocity composite VectorField.1 VectorField.2
 gfx define field VectorFieldMagnitude magnitude field Velocity
