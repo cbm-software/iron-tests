@@ -199,12 +199,13 @@ disp(outString)
 disp '**************************************************************************'
 
 %% PLOTTING
-figure(1)
+figure('Visible', 'off')
 tempString = ['U' num2str(dispOfInterest) ' over top Surface'];
 title(tempString)
 plot(x_vec,abaq_topSurf_values(:,dispOfInterest),'-r')
 hold on
 plot(x_vec,cmiss_topSurf_values)
+hold off;
 ylabel(['U' num2str(dispOfInterest) ' (mm)'])
 xlabel('Horizontal distance (reference config.) (mm)')
 legend('show')
