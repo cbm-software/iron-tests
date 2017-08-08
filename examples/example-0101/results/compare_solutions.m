@@ -63,4 +63,4 @@ fprintf(fid_summary, sprintf('Passed tests: %i / %i', num_tests-num_failed_tests
 fclose(fid_failed);
 fclose(fid_summary);
 
-%quit
+quit
