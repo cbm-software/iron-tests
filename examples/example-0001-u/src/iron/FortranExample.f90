@@ -119,7 +119,7 @@ PROGRAM LAPLACEEXAMPLE
   INTEGER(CMISSIntg)    :: NumberOfComputationalNodes,ComputationalNodeNumber
   INTEGER(CMISSIntg)    :: EquationsSetIndex
   INTEGER(CMISSIntg)    :: NumberOfDimensions,NumberOfNodes,NumberOfElements
-  INTEGER(CMISSIntg)    :: NumberOfNodesPerElement, NumberOfBoundaryPatches, NumberOfBoundaryPatchComponents
+  INTEGER(CMISSIntg)    :: NumberOfNodesPerElement, NumberOfBoundaryPatches
   INTEGER(CMISSIntg)    :: FirstNodeNumber,LastNodeNumber
   INTEGER(CMISSIntg)    :: FirstNodeDomain,LastNodeDomain,NodeDomain
   INTEGER(CMISSIntg)    :: NodeIdx,ComponentIdx,ElementIdx
@@ -291,20 +291,13 @@ PROGRAM LAPLACEEXAMPLE
     CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".B")
   ENDIF
   ! Read CHeart mesh based on the given command line arguments
-  ! Read mesh info
-  WRITE(*,*) "Reading CHeart mesh data"
-  CALL cmfe_ReadMeshInfo(trim(Filename), NumberOfDimensions, NumberOfNodes, NumberOfElements, &
-    & NumberOfNodesPerElement, NumberOfBoundaryPatches, NumberOfBoundaryPatchComponents, "CHeart", Err)
-  ! Allocate variables to store mesh data
-  ALLOCATE(NodesImport(NumberOfNodes,NumberOfDimensions),STAT=Err)
-  IF(Err/=0) CALL HANDLE_ERROR("Can not allocate memory.")
-  ALLOCATE(ElementsImport(NumberOfElements,NumberOfNodesPerElement),STAT=Err)
-  IF(Err/=0) CALL HANDLE_ERROR("Can not allocate memory.")
-  ! Note: boundary variable is larger than it needs to be --> move allocate inside function to be able to compute the minimum size
-  ALLOCATE(BoundaryPatchesImport(1+NumberOfBoundaryPatches*NumberOfBoundaryPatchComponents),STAT=Err)
-  IF(Err/=0) CALL HANDLE_ERROR("Can not allocate memory.")
-  ! Read mesh data
-  CALL cmfe_ReadMeshFiles(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
+  WRITE(*,*) "Reading CHeart mesh data file "//TRIM(Filename)
+  CALL cmfe_ReadMesh(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
+  NumberOfNodes             = SIZE(NodesImport,1)
+  NumberOfDimensions        = SIZE(NodesImport,2)
+  NumberOfElements          = SIZE(ElementsImport,1)
+  NumberOfNodesPerElement   = SIZE(ElementsImport,2)
+  NumberOfBoundaryPatches   = BoundaryPatchesImport(1)
   WRITE(*,*) "...done"
 
   ! set up mesh from imported mesh data

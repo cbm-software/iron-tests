@@ -1,7 +1,6 @@
 default:
 	make clean
 	mkdir -p results/current_run
-	make debug
 	make release
 	make compare
 	make create-figures

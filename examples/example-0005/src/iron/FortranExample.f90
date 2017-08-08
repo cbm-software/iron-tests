@@ -130,7 +130,6 @@ PROGRAM LAPLACEEXAMPLE
   REAL(CMISSRP),        ALLOCATABLE :: NodesImport(:,:)           !< The coordinates of the mesh nodes
   INTEGER(CMISSIntg),   ALLOCATABLE :: ElementsImport(:,:)        !< The node IDs for each element
   INTEGER(CMISSIntg),   ALLOCATABLE :: NodesetImport(:)           !< The nodesets
-  INTEGER(CMISSIntg)                :: InterpolationImport        !< The interpolation type of the mesh (not required in this setting here)
   
 #ifdef WIN32
   !Initialise QuickWin
@@ -265,16 +264,13 @@ PROGRAM LAPLACEEXAMPLE
   ! Read mesh based on the given command line arguments
   ! Read mesh date
   WRITE(*,*) "Reading mesh data with the ReadMeshCubit function"
-  CALL cmfe_ReadMeshFilesCubit(trim(Filename), NodesImport, ElementsImport, NodesetImport, InterpolationImport, "CHeart", Err)
+  CALL cmfe_ReadMesh(trim(Filename), NodesImport, ElementsImport, NodesetImport, "CHeart", Err)
   NumberOfNodes = SIZE(NodesImport,1)
   NumberofDimensions = SIZE(NodesImport,2)
   NumberOfElements = SIZE(ElementsImport,1)
   ! Do some checks
   IF(NUMBER_OF_DIMENSION/=NumberofDimensions) THEN
     CALL HANDLE_ERROR("Dimension mismatch for imported mesh")
-  ENDIF
-  IF(INTERPOLATION_TYPE/=InterpolationImport) THEN
-    CALL HANDLE_ERROR("Interpolation type mismatch for imported mesh")
   ENDIF
   WRITE(*,*) "...done"
 
