@@ -1,6 +1,8 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 import exnode_reader

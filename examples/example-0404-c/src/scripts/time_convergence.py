@@ -1,6 +1,8 @@
 import math
 import numpy as np
 from numpy import linalg as LA
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D

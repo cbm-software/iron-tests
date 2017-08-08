@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #
 # script to compare nodal field values between OpenCMISS-iron and Matlab
-
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib import cm
 import sys
 sys.path.append('../src/scripts/')    # add path of exnode_reader
