@@ -2,8 +2,8 @@ default:
 	make clean
 	make run-tests-release
 	make collect-results
-#	make create-figures
-#	make latexmk
+	make create-figures
+	make latexmk
 
 tex:
 	xelatex tests

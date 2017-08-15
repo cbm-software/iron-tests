@@ -1,6 +1,6 @@
-clc
-clear all
-close all
+clc;
+clear all;
+close all;
 
 %% FILE DEFINITIONS
 % 
@@ -15,7 +15,7 @@ tight_tol = 1.0e-10;
 num_tests = 0;
 num_failed_tests = 0;
 
-addpath('../../scripts/compare_abaqus_opencmiss/')
+addpath('../../scripts/compare_abaqus_opencmiss/');
 
 fid_failed  = fopen('failed.tests', 'w');
 fid_summary = fopen('results.summary', 'w');
@@ -39,14 +39,17 @@ for loadingIdx = 1:size(CASES_LOADING, 2)
                     if(tight_tol<l2_norm)
                         num_failed_tests = num_failed_tests + 1;
                         if(num_failed_tests==1)
-                            fprintf(fid_failed, ['Failed tests:']);
+                            fprintf(fid_failed, ['Failed tests:\n']);
                         end
-                        fprintf(fid_failed, [' ' int2str(num_failed_tests) ' =====']);
-                        fprintf(fid_failed, ['    LOADING       = ' LOADING '\n']);
-                        fprintf(fid_failed, ['    REFINEMENT    = ' REFINEMENT '\n']);
-                        fprintf(fid_failed, ['    DIMENSION     = ' DIMENSION '\n']);
-                        fprintf(fid_failed, ['    INTERPOLATION = ' int2str(INTERPOLATION) '\n']);
-                        fprintf(fid_failed, ['    CONTROL       = ' CONTROL '\n']);
+                        fprintf(fid_failed, [' ' int2str(num_failed_tests) ...
+                            ' ==========================================\n']);
+                        fprintf(fid_failed, ['    LOADING           = ' LOADING '\n']);
+                        fprintf(fid_failed, ['    REFINEMENT        = ' REFINEMENT '\n']);
+                        fprintf(fid_failed, ['    DIMENSION         = ' DIMENSION '\n']);
+                        fprintf(fid_failed, ['    INTERPOLATION     = ' int2str(INTERPOLATION) '\n']);
+                        fprintf(fid_failed, ['    CONTROL           = ' CONTROL '\n']);
+                        fprintf(fid_failed, ['    norm(aba-iron, 2) = ' ...
+                            sprintf('%.e', l2_norm) ' >= ' sprintf('%e', tight_tol) '\n']);
                     end
                 end
             end
