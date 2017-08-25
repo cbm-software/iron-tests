@@ -67,7 +67,7 @@ sub call_biceps_bottom{
       #m=The match operator; suche nach Node, \s - string \d - number      
 	    if($line=~m/^ Node:[\s]+([\d]+)/) #wenn das zutrifft dann tue:
 	      {$line_no=0;$node_no=$1;$first=1}
-	    if(($line_no==4) && ($first==1)) # Read y-displacement (field 2)
+	    if(($line_no==4) && ($first==1)) # Read x-displacement (field 3)
 	    {
 	      $line = trim($line);
 	      print WRITE $line,"\n";
