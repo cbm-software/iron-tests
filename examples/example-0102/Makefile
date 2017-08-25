@@ -26,7 +26,7 @@ release-big:
 	bash run_example.sh release big
 
 compare-fast:
-	echo ">>>ERROR: Automatic comparison not implemented"
+	cd results; rm -f failed.tests results.summary; matlab -nodesktop -nosplash -r compare_solutions
 
 compare-big:
 	echo ">>>ERROR: Automatic comparison not implemented"

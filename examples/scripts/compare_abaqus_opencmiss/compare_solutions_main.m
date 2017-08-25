@@ -211,7 +211,7 @@ xlabel('Horizontal distance (reference config.) (mm)')
 legend('show')
 legend('Abaqus solution','openCMISS solution')
 
-outName = [LOADING '_' REFINEMENT '_' DIMENSION]; 
+outName = [LOADING '_' REFINEMENT '_' DIMENSION '_' num2str(INTERPOLATION)]; 
 print(outName,'-dpng')
 
 % bottom surface (y = 0)
