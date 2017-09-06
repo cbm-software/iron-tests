@@ -203,16 +203,16 @@
      #Nodes= 4
      1.  #Values=1
       Value indices:     1
-      Scale factor indices:   14
-     2.  #Values=1
-      Value indices:     1
-      Scale factor indices:   15
+      Scale factor indices:   11
      3.  #Values=1
       Value indices:     1
-      Scale factor indices:   16
-     4.  #Values=1
+      Scale factor indices:   12
+     6.  #Values=1
       Value indices:     1
-      Scale factor indices:   17
+      Scale factor indices:   13
+     10.  #Values=1
+      Value indices:     1
+      Scale factor indices:   14
  3) VectorField (derivative), field,  rectangular cartesian, #Components=4
    1.   q.simplex(2;3)*q.simplex*q.simplex, no modify, standard node based.
      #Nodes= 10
@@ -314,16 +314,16 @@
      #Nodes= 4
      1.  #Values=1
       Value indices:     1
-      Scale factor indices:   14
-     2.  #Values=1
-      Value indices:     1
-      Scale factor indices:   15
+      Scale factor indices:   11
      3.  #Values=1
       Value indices:     1
-      Scale factor indices:   16
-     4.  #Values=1
+      Scale factor indices:   12
+     6.  #Values=1
       Value indices:     1
-      Scale factor indices:   17
+      Scale factor indices:   13
+     10.  #Values=1
+      Value indices:     1
+      Scale factor indices:   14
  4) Material, field,  rectangular cartesian, #Components=2
    1.   constant*constant*constant, no modify, grid based.
      #xi1=0, #xi2=0, #xi3=0

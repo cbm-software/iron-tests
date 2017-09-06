@@ -7,15 +7,18 @@ for ($i = 100 ; $i < 1001 ; $i=$i+100)
 }
 
 #Read in the element description
-gfx read elements results/reference/iron//3D_MeshRefinementLevel_002/Example.part0.exelem;
+gfx read elements results/reference/iron/3D_MeshRefinementLevel_002/Example.part0.exelem;
 
 gfx define field Velocity composite VectorField.1 VectorField.2 VectorField.3
 gfx define field VectorFieldMagnitude magnitude field Velocity
 
 gfx define field VelocityX component VectorField.1
 gfx define field VelocityY component VectorField.2
-gfx define field VelocityY component VectorField.3
+gfx define field VelocityZ component VectorField.3
 gfx define field Pressure  component VectorField.4
+gfx define field CoordinateX component Geometry.x
+gfx define field CoordinateY component Geometry.y
+gfx define field CoordinateZ component Geometry.z
 
 gfx define faces egroup Region
 gfx modify g_element Region lines coordinate Geometry select_on material default selected_material default_selected
@@ -28,11 +31,14 @@ gfx cre mat copper ambient 1 0.2 0 diffuse 0.6 0.3 0 specular 0.7 0.7 0.5 shinin
 gfx modify g_element "/" general clear;
 
 gfx create spectrum velocity_spectrum
+gfx create spectrum pressure_spectrum
 
-gfx modify g_element "/" surfaces coordinate Geometry tessellation default LOCAL select_on material black spectrum velocity_spectrum selected_material default_selected render_wireframe;
+gfx modify g_element "/" surfaces coordinate Geometry tessellation default LOCAL select_on material black spectrum velocity_spectrum selected_material default_selected render_wireframe invisible;
 gfx modify spectrum velocity_spectrum linear reverse range 0 1.0 extend_above extend_below rainbow colour_range 0 1 component 1
-gfx modify g_element "/" node_points subgroup Region coordinate Geometry LOCAL glyph point general size "1*1*1" centre 0,0,0 font default label Geometry select_on material black selected_material default_selected;
-gfx modify g_element "/" surfaces coordinate Geometry tessellation default LOCAL select_on material black data VectorFieldMagnitude spectrum velocity_spectrum selected_material default_selected render_shaded;
+gfx modify g_element "/" node_points subgroup Region coordinate Geometry LOCAL glyph point general size "1*1*1" centre 0,0,0 font default label Geometry select_on material black selected_material default_selected invisible;
+gfx modify g_element "/" surfaces coordinate Geometry tessellation default LOCAL select_on material black data VectorFieldMagnitude spectrum velocity_spectrum selected_material default_selected render_shaded invisible;
+gfx modify g_element "/" iso_surfaces coordinate Geometry tessellation default LOCAL select_on material black data VectorFieldMagnitude spectrum velocity_spectrum selected_material default_selected render_shaded iso_scalar CoordinateZ iso_value 0.5;
+#gfx modify g_element "/" iso_surfaces coordinate Geometry tessellation default LOCAL select_on material black data Pressure spectrum pressure_spectrum selected_material default_selected render_shaded iso_scalar CoordinateZ iso_value 0.5;
 
 gfx create colour_bar spectrum velocity_spectrum label_material black
 
