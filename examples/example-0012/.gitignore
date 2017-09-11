@@ -1,0 +1,10 @@
+debug/
+release/
+doc/*.aux
+*-eps-converted-to.pdf
+*.log
+*.out
+*.diag
+*~
+results/results.summary
+results/failed.tests
