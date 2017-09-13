@@ -3,12 +3,10 @@
 %
 \clearpage
 %
-\subsection{Example-0013 \texttt{[PLAUSIBLE]}}
+\subsection{Example-0013 \texttt{[VALIDATED]}}
 %
 Example uses generated regular meshes and solves a static problem, i.e., applies
 the boundary conditions in one step.
-
-ISSUE: 3D results are off. Probably due to fibre rotation bug!
 %
 %===============================================================================
 %
@@ -143,6 +141,19 @@ We use CHeart rev.\ 6292 to produce numerical reference solutions.
     \caption{3D results, current run w/ command line arguments [2.0 1.0 1.0 8 4 4 1 0 2 3 7 0.523598775598299 0.698131700797732 0.174532925199433].}
     \label{example-0013-current-run-3D-fig}
 \end{figure}
+%
+%===============================================================================
+%
+\subsubsection{Misc}
+%
+OpenCMISS-iron assumes the conductivity tensor defined in local element
+Xi coordinates and uses the fibre angles to rotate the conductivity tensor
+internally.
+The script src/matlab/compute\_conductivity\_tensor.m can be used to compute the
+conductivity tensor in world coordinates, since CHeart assumes the conductivity
+tensor to be defined in world coordinates.
+Thus, if one sets up a new test, one has to compute the conductivity tensor
+in world coordinates as input for CHeart to derive numerical reference data.
 %
 %===============================================================================
 %===============================================================================

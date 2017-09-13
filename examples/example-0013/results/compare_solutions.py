@@ -171,7 +171,7 @@ blocksizeRef    = 9
 # tolerance used to match nodes between CHeart and iron
 tolx         = 1.0e-6
 # tolerance used to check numerical solution
-tolu         = 1.0e-10
+tolu         = 1.0e-9
 
 # number of elements in each coordinate direction for different refinement levels
 NumberOfElements = np.zeros((3,3), dtype=int)
