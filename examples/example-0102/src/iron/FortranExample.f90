@@ -219,8 +219,6 @@ PROGRAM LinearElasticity2DExtensionPlaneStressLagrangeBasis
   ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
   ! Intialise cmiss
   CALL cmfe_Initialise(WorldCoordinateSystem,WorldRegion,Err)
   CALL cmfe_ErrorHandlingModeSet(CMFE_ERRORS_TRAP_ERROR,Err)

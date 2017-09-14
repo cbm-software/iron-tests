@@ -15,23 +15,30 @@ We solve the following equation (both $2D$ and $3D$ domains are considered),
     \nabla \cdot \boldsymbol{\sigma} (\boldsymbol{u}, t) = \boldsymbol{f} (\boldsymbol{u}, t) & &&\Omega = [0, 160] \times [0, 120] \times [0, 120], t \in [0, 5],
 \end{align}
 %
-with time step size $\Delta_t = 1$ and $\boldsymbol{u} = [u_x,u_y]$ in $2D$ $\boldsymbol{u} = [u_x,u_y,u_z]$ in 3D. The boundary conditions in $2D$ are given by
+with time step size $\Delta_t = 1$ (used for load stepping)
+and $\boldsymbol{u} = [u_x,u_y]$ in $2D$ $\boldsymbol{u} = [u_x,u_y,u_z]$ in 3D.
+The boundary conditions in $2D$ are given by
 %
 \begin{align}
-    u_x = u_y = 0 & &&x = y = 0, \\
+    u_x = 0 & &&x = 0, \\
+    u_y = 0 & &&y = 0, \\
 		\boldsymbol{f} (u_x) = 6.0 \times 10^{4} & &&x = 160,
 \end{align}
 %
 and in 3D by
+%
 \begin{align}
-    u_x = u_y = u_z =0 & &&x = y = z =0, \\
+    u_x = 0 & &&x = 0, \\
+    u_y = 0 & &&y = 0, \\
+    u_z = 0 & &&z = 0, \\
 		\boldsymbol{f} (u_x) = 7.2 \times 10^{6} & &&x = 160.
 \end{align}
+%
 The material parameters are
+%
 \begin{align}
     E = & 10000\texttt{MPa}, \\
     \nu = & 0.3, \\
-		\rho = & 5 \times 10^{-9}\texttt{tonne.mm$^3$}.
 \end{align}
 %
 %===============================================================================
@@ -68,44 +75,29 @@ The material parameters are
 %
 %===============================================================================
 %
-\subsubsection{Results}
-%
-\begin{figure}[h!]
-    \centering 
-    \includegraphics[width=0.9\columnwidth]{examples/example-0101/doc/figures/l160x120x000_n32x24x00_i1_s0.png} 
-    \caption{Results, iron $2D$ fine mesh.}
-    \label{example-0101-iron-2D-fig}
-\end{figure}
-%
-\begin{figure}[h!]
-    \centering 
-    \includegraphics[width=0.9\columnwidth]{examples/example-0101/doc/figures/l160x120x120_n32x24x24_i1_s0.png} 
-    \caption{Results, iron $3D$ fine mesh.}
-    \label{example-0101-iron-3D-fig}
-\end{figure}
-%
-%===============================================================================
-%
 \subsubsection{Validation}
+%
+\verbatiminput{examples/example-0111/results/results.summary}
+\verbatiminput{examples/example-0111/results/failed.tests}
 %
 The iron results are compared to those from Abaqus (version 2017). The figures below show selected results from the validation simulations carried out in Abaqus and provide a qualitative validation. A quantitative validation was carried out by comparing the horizontal displacement $u_y$ along the free-edge ($y=120$ for 2D and $y=z=120$ for 3D) and computing the L2-norm accodring to
 \begin{align}
     L_2\texttt{-norm} = \frac{1}{N} \times  \sum_{i=1}^{N} \sqrt{\left(u_{y,\texttt{abaqus}}^i-u_{y,\texttt{iron}}^i  \right)^2},
 \end{align}
-where $N$ is the total number of nodes along the free-edge. The results over the mesh refinements are given in Table \ref{tab:example-0101-valid-Iron-Abaqus}.
+where $N$ is the total number of nodes along the free-edge. The results over the mesh refinements are given in Table \ref{tab:example-0111-valid-Iron-Abaqus}.
 %
 \begin{figure}[h!]
     \centering 
-    \includegraphics[width=\columnwidth]{examples/example-0111/doc/figures/2D_UNIAX_FORCE_ELASTIC_elem_5_160x120mm_intp_1_DIRECTU2.png} 
+    \includegraphics[width=\columnwidth]{examples/example-0111/doc/figures/2D_UNIAX_FORCE_ELASTIC_elem_5_160x120mm_intp_1_DIRECTU2.png}
     \caption{Results, Abaqus $2D$ fine mesh.}
-    \label{example-0101-abaqus-2D-fig}
+    \label{example-0111-abaqus-2D-fig}
 \end{figure}
 %
 \begin{figure}[h!]
     \centering 
-    \includegraphics[width=\columnwidth]{examples/example-0111/doc/figures/3D_UNIAX_FORCE_ELASTIC_elem_5_160x120x120mm_intp_1_DIRECTU2.png} 
+    \includegraphics[width=\columnwidth]{examples/example-0111/doc/figures/3D_UNIAX_FORCE_ELASTIC_elem_5_160x120x120mm_intp_1_DIRECTU2.png}
     \caption{Results, abaqus $3D$ fine mesh.}
-    \label{example-0101-abaqus-3D-fig}
+    \label{example-0111-abaqus-3D-fig}
 \end{figure}
 %
 \begin{table}[h!]
@@ -126,7 +118,21 @@ where $N$ is the total number of nodes along the free-edge. The results over the
 		$3D$			&	Fine 		&	\ldots									& Quadratic \\		
     \end{tabular}
 		\caption{Quantiative error between Abaqus 2017 and iron simulations for linear elastic uniaxial extenions}
-		\label{tab:example-0101-valid-Iron-Abaqus}
+		\label{tab:example-0111-valid-Iron-Abaqus}
 \end{table}
+%
+\begin{figure}[h!]
+    \centering
+%    \includegraphics[width=0.9\columnwidth]{examples/example-0111/doc/figures/l160x120x000_n32x24x00_i1_s0.png}
+    \caption{Results, iron $2D$ fine mesh.}
+    \label{example-0111-iron-2D-fig}
+\end{figure}
+%
+\begin{figure}[h!]
+    \centering
+%    \includegraphics[width=0.9\columnwidth]{examples/example-0111/doc/figures/l160x120x120_n32x24x24_i1_s0.png}
+    \caption{Results, iron $3D$ fine mesh.}
+    \label{example-0111-iron-3D-fig}
+\end{figure}
 %===============================================================================
 %===============================================================================

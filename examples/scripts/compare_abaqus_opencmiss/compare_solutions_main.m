@@ -48,13 +48,13 @@ numNodes_y = numElem_y*interPol+1;
 numNodes_z = numElem_z*interPol+1;
 
 % regular spacing
-delta_x = length/numNodes_x;
-delta_y = height/numNodes_y;
-delta_z = width/numNodes_z;
+delta_x = length/numElem_x;
+delta_y = height/numElem_y;
+delta_z = width/numElem_z;
 % create length vectors for plotting
-x_vec = 1:delta_x:numNodes_x*delta_x;
-y_vec = 1:delta_y:numNodes_y*delta_x;
-z_vec = 1:delta_z:numNodes_z*delta_x;
+x_vec = 0:delta_x:numElem_x*delta_x;
+y_vec = 0:delta_y:numElem_y*delta_y;
+z_vec = 0:delta_z:numElem_z*delta_z;
 
 %% FILES READ IN
 % read in results files

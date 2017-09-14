@@ -25,6 +25,9 @@ debug-big:
 release-big:
 	bash run_example.sh release big
 
+compare:
+	make compare-fast
+
 compare-fast:
 	cd results; rm -f failed.tests results.summary; matlab -nodesktop -nosplash -r compare_solutions
 

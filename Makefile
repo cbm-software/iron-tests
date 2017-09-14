@@ -3,13 +3,16 @@ default:
 	make run-tests-release
 	make collect-results
 	make create-figures
-	make latexmk
+	make latexmk-once
 
 tex:
 	xelatex tests
 	bibtex  tests
 	xelatex tests
 	xelatex tests
+
+latexmk-once:
+	latexmk -pdf tests
 
 latexmk:
 	latexmk -pdf -pvc tests

@@ -3,7 +3,7 @@ clear all;
 close all;
 
 %% FILE DEFINITIONS
-% 
+%
 CASES_LOADING = {'UNIAX'}; % SHEAR; UNIAX
 CASES_REFINEMENT = {'COARSE', 'MEDIUM', 'FINE'};
 CASES_DIMENSION = {'2D', '3D'};
@@ -59,9 +59,9 @@ end
 
 
 if(num_failed_tests==0)
-    fprintf(fid_failed, 'No failed tests.');
+    fprintf(fid_failed, 'No failed tests.\n');
 end
-fprintf(fid_summary, sprintf('Passed tests: %i / %i', num_tests-num_failed_tests, num_tests));
+fprintf(fid_summary, sprintf('Passed tests: %i / %i\n', num_tests-num_failed_tests, num_tests));
 
 fclose(fid_failed);
 fclose(fid_summary);
