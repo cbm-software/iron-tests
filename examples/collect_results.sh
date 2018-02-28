@@ -2,8 +2,8 @@ here=$(pwd)
 # run compare target for every example
 for examplefolder in `ls -d example-*`
 do
-    cd $examplefolder
-    make compare
+    cd $examplefolder/results
+    python compare_solutions.py
     cd $here
 done
 pwd

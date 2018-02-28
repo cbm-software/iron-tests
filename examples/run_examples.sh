@@ -9,7 +9,7 @@ target=$1
 for examplefolder in `ls -d example-*`
 do
     cd $examplefolder
-    make $target
+    bash run_example.sh $target
     cd $here
 done
 pwd

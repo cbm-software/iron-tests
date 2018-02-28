@@ -1,6 +1,22 @@
 default:
 	make clean
-	make run-tests-release
+	make example-0001
+	make example-0001-u
+	make example-0002
+	make example-0003
+	make example-0004
+	make example-0005
+	make example-0011
+	make example-0012
+	make example-0013
+	make example-0101
+	make example-0102
+	make example-0111
+	make example-0112
+	make example-0302-u
+	make example-0401
+	make example-0402
+	make example-0404-c
 	make collect-results
 	make create-figures
 	make latexmk-once
@@ -29,8 +45,6 @@ collect-results:
 create-figures:
 	cd examples; bash create_figures.sh
 
-configure-example-debug=cmake -DOpenCMISSLibs_DIR=$(OPENCMISS_INSTALL_DIR) -DOPENCMISS_CONFIG_BUILD_TYPE=Debug ..
-
 example-%:
 	cd examples/$@ \
 	&& mkdir -p debug \
@@ -42,7 +56,7 @@ example-%:
 	&& bash run_example.sh debug \
 	&& cd results \
 	&& rm -f failed.tests results.summary \
-	&& python compare_solutions.py
+	&& python compare_solutions.py | grep -iE "Passed tests:|Testing 2D|Testing 3D"
 
 clean:
 	rm -rf *aux doc/*aux *.bbl *.blg *.fdb_latexmk  *.fls *.lof *.log *.lot *.out *.toc
@@ -61,7 +75,8 @@ clean:
 	rm -rf examples/example-*/CMakeCache.txt
 	rm -rf examples/example-*/cmake_install.cmake
 	rm -rf examples/example-*/CMakeFiles
-	rm -rf examples/example-0001/Makefile
+	rm -rf examples/example-*/Makefile
+	rm -rf examples/example-*/bin/*
 	rm -rf examples/example-*/install_manifest.txt
 	rm -rf examples/example-*/src/iron/example
 	rm -rf examples/example-*/src/iron/CMakeFiles
