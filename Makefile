@@ -29,6 +29,21 @@ collect-results:
 create-figures:
 	cd examples; bash create_figures.sh
 
+configure-example-debug=cmake -DOpenCMISSLibs_DIR=$(OPENCMISS_INSTALL_DIR) -DOPENCMISS_CONFIG_BUILD_TYPE=Debug ..
+
+example-%:
+	cd examples/$@ \
+	&& mkdir -p debug \
+	&& cd debug \
+	&& cmake -DOpenCMISSLibs_DIR=$(OPENCMISS_INSTALL_DIR) -DOPENCMISS_CONFIG_BUILD_TYPE=Debug .. \
+	&& make \
+	&& make install \
+	&& cd .. \
+	&& bash run_example.sh debug \
+	&& cd results \
+	&& rm -f failed.tests results.summary \
+	&& python compare_solutions.py
+
 clean:
 	rm -rf *aux doc/*aux *.bbl *.blg *.fdb_latexmk  *.fls *.lof *.log *.lot *.out *.toc
 	rm -rf examples/example-*/doc/figures/current_run_*eps
@@ -43,3 +58,12 @@ clean:
 	rm -rf examples/example-*/results/results.summary
 	rm -rf failed.tests results.summary
 	rm -rf examples/example-*/src/cheart/gmon.out
+	rm -rf examples/example-*/CMakeCache.txt
+	rm -rf examples/example-*/cmake_install.cmake
+	rm -rf examples/example-*/CMakeFiles
+	rm -rf examples/example-0001/Makefile
+	rm -rf examples/example-*/install_manifest.txt
+	rm -rf examples/example-*/src/iron/example
+	rm -rf examples/example-*/src/iron/CMakeFiles
+	rm -rf examples/example-*/src/iron/Makefile
+	rm -rf examples/example-*/src/iron/cmake_install.cmake

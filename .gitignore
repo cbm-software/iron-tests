@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+examples/example-*/bin
 
 # temporary LaTex files
 *.aux
