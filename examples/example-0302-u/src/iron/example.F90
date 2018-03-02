@@ -44,6 +44,7 @@ PROGRAM LidDrivenCavity
 
   USE OpenCMISS
   USE OpenCMISS_Iron
+  USE meshReader
 #ifndef NOMPIMOD
   USE MPI
 #endif
@@ -286,7 +287,7 @@ PROGRAM LidDrivenCavity
   ENDIF
   ! Read CHeart mesh based on the given command line arguments
   WRITE(*,*) "Reading CHeart mesh data file "//TRIM(Filename)
-  CALL cmfe_ReadMesh(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
+  CALL ReadMesh(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
   NumberOfNodes             = SIZE(NodesImport,1)
   NumberOfDimensions        = SIZE(NodesImport,2)
   NumberOfElements          = SIZE(ElementsImport,1)
@@ -472,7 +473,7 @@ PROGRAM LidDrivenCavity
       !=== Inflow boundary
       ! Get index in boundary file
       CurrentPatchID=4
-      CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+      CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
       ! Now, set boundary condition
       DO NodeIdx=StartIdx,StopIdx
         NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -494,7 +495,7 @@ PROGRAM LidDrivenCavity
         IF (PatchIdx==4) CYCLE
         ! Get index in boundary file
         CurrentPatchID=PatchIdx
-        CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+        CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
         ! Now, set boundary condition
         DO NodeIdx=StartIdx,StopIdx
           NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -513,7 +514,7 @@ PROGRAM LidDrivenCavity
     !=== Inflow boundary
     ! Get index in boundary file
     CurrentPatchID=4
-    CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+    CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
     ! Now, set boundary condition
     DO NodeIdx=StartIdx,StopIdx
       NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -538,7 +539,7 @@ PROGRAM LidDrivenCavity
       IF (PatchIdx==4) CYCLE
       ! Get index in boundary file
       CurrentPatchID=PatchIdx
-      CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+      CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
       ! Now, set boundary condition
       DO NodeIdx=StartIdx,StopIdx
         NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -579,7 +580,7 @@ PROGRAM LidDrivenCavity
       !=== Inflow boundary
       ! Get index in boundary file
       CurrentPatchID=4
-      CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+      CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
       ! Now, set boundary condition
       DO NodeIdx=StartIdx,StopIdx
         NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -601,7 +602,7 @@ PROGRAM LidDrivenCavity
         IF (PatchIdx==4) CYCLE
         ! Get index in boundary file
         CurrentPatchID=PatchIdx
-        CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+        CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
         ! Now, set boundary condition
         DO NodeIdx=StartIdx,StopIdx
           NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -620,7 +621,7 @@ PROGRAM LidDrivenCavity
       !=== Inflow boundary
       ! Get index in boundary file
       CurrentPatchID=4
-      CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+      CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
       ! Now, set boundary condition
       DO NodeIdx=StartIdx,StopIdx
         NodeNumber=BoundaryPatchesImport(NodeIdx)
@@ -645,7 +646,7 @@ PROGRAM LidDrivenCavity
         IF (PatchIdx==4) CYCLE
         ! Get index in boundary file
         CurrentPatchID=PatchIdx
-        CALL cmfe_ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+        CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
         ! Now, set boundary condition
         DO NodeIdx=StartIdx,StopIdx
           NodeNumber=BoundaryPatchesImport(NodeIdx)

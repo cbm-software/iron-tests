@@ -50,6 +50,7 @@ PROGRAM LAPLACEEXAMPLE
 
   USE OpenCMISS
   USE OpenCMISS_Iron
+  USE meshReader
 #ifndef NOMPIMOD
   USE MPI
 #endif
@@ -264,7 +265,7 @@ PROGRAM LAPLACEEXAMPLE
   ! Read mesh based on the given command line arguments
   ! Read mesh date
   WRITE(*,*) "Reading mesh data with the ReadMeshCubit function"
-  CALL cmfe_ReadMesh(trim(Filename), NodesImport, ElementsImport, NodesetImport, "CHeart", Err)
+  CALL ReadMesh(trim(Filename), NodesImport, ElementsImport, NodesetImport, "CHeart", Err)
   NumberOfNodes = SIZE(NodesImport,1)
   NumberofDimensions = SIZE(NodesImport,2)
   NumberOfElements = SIZE(ElementsImport,1)
@@ -426,8 +427,8 @@ PROGRAM LAPLACEEXAMPLE
   !Start the creation of the equations set boundary conditions
   CALL cmfe_BoundaryConditions_Initialise(BoundaryConditions,Err)
   CALL cmfe_SolverEquations_BoundaryConditionsCreateStart(SolverEquations,BoundaryConditions,Err)
-  CALL cmfe_ImportedMesh_SurfaceGet(NodesetImport,1,Nodeset1StartIdx,Nodeset1EndIdx,Err)
-  CALL cmfe_ImportedMesh_SurfaceGet(NodesetImport,2,Nodeset2StartIdx,Nodeset2EndIdx,Err)
+  CALL ImportedMesh_SurfaceGet(NodesetImport,1,Nodeset1StartIdx,Nodeset1EndIdx,Err)
+  CALL ImportedMesh_SurfaceGet(NodesetImport,2,Nodeset2StartIdx,Nodeset2EndIdx,Err)
   !Set the left surface nodes to 1
   DO NodeIdx=Nodeset1StartIdx,Nodeset1EndIdx
     NodeNumber=NodesetImport(NodeIdx)

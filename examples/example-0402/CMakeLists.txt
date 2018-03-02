@@ -1,4 +1,4 @@
-set(ExampleName "example")
+set(ExampleName "example" ${IRON_MESH_READER_ROOT}/src/meshReader.F90)
 
 cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
 

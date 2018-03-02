@@ -48,8 +48,9 @@ create-figures:
 example-%:
 	cd examples/$@ \
 	&& mkdir -p debug \
+	&& rm -rf debug/* \
 	&& cd debug \
-	&& cmake -DOpenCMISSLibs_DIR=$(OPENCMISS_INSTALL_DIR) -DOPENCMISS_CONFIG_BUILD_TYPE=Debug .. \
+	&& cmake -DOpenCMISSLibs_DIR=$(OPENCMISS_INSTALL_DIR) -DOPENCMISS_CONFIG_BUILD_TYPE=Debug -DIRON_MESH_READER_ROOT=$(IRON_MESH_READER_ROOT) .. \
 	&& make \
 	&& make install \
 	&& cd .. \
