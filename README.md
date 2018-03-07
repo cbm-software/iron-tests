@@ -15,8 +15,8 @@ Collection of tests for OpenCMISS-iron
 
 You will need to download the git repository to import user meshes, found here:
 
-  https://github.com/beauof/meshReader
+	https://github.com/beauof/meshReader
 
 Simply set the environment variable in your ~/.bashrc and it will be picked up by the CMake files:
 
-  export IRON_MESH_READER_ROOT=/path/to/git/repo/for/meshReader
+	export IRON_MESH_READER_ROOT=/path/to/git/repo/for/meshReader
