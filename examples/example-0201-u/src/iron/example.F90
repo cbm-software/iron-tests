@@ -118,28 +118,48 @@ PROGRAM FORTRANEXAMPLE
 
 
 
-  !CMISS variables
-  TYPE(cmfe_BasisType) :: DisplacementBasis,PressureBasis
-  TYPE(cmfe_BoundaryConditionsType) :: BoundaryConditions
-  TYPE(cmfe_CoordinateSystemType) :: CoordinateSystem, WorldCoordinateSystem
-  TYPE(cmfe_MeshType) :: Mesh
-  TYPE(cmfe_DecompositionType) :: Decomposition
-  TYPE(cmfe_EquationsType) :: Equations
-  TYPE(cmfe_EquationsSetType) :: EquationsSet
-  TYPE(cmfe_FieldType) :: GeometricField,FibreField,MaterialField,DependentField,SourceField,EquationsSetField
-  TYPE(cmfe_FieldsType) :: Fields
-  TYPE(cmfe_GeneratedMeshType) :: GeneratedMesh
-  TYPE(cmfe_ProblemType) :: Problem
-  TYPE(cmfe_RegionType) :: Region,WorldRegion
-  TYPE(cmfe_SolverType) :: Solver,LinearSolver
-  TYPE(cmfe_SolverEquationsType) :: SolverEquations
-  TYPE(cmfe_ControlLoopType) :: ControlLoop
-!  TYPE(cmfe_QuadratureType :: quadratureScheme
+  ! CMISS variables
+  TYPE(cmfe_BasisType)                  :: DisplacementBasis
+  TYPE(cmfe_BasisType)                  :: PressureBasis
+  TYPE(cmfe_BoundaryConditionsType)     :: BoundaryConditions
+  TYPE(cmfe_CoordinateSystemType)       :: CoordinateSystem, WorldCoordinateSystem
+  TYPE(cmfe_DecompositionType)          :: Decomposition
+  TYPE(cmfe_EquationsType)              :: Equations
+  TYPE(cmfe_EquationsSetType)           :: EquationsSet
+  TYPE(cmfe_FieldType)                  :: GeometricField
+  TYPE(cmfe_FieldType)                  :: FibreField
+  TYPE(cmfe_FieldType)                  :: MaterialField
+  TYPE(cmfe_FieldType)                  :: DependentField
+  TYPE(cmfe_FieldType)                  :: SourceField
+  TYPE(cmfe_FieldType)                  :: EquationsSetField
+  TYPE(cmfe_FieldsType)                 :: Fields
+  TYPE(cmfe_MeshElementsType)           :: DisplacementElements,PressureElements
+  TYPE(cmfe_GeneratedMeshType)          :: GeneratedMesh
+  TYPE(cmfe_MeshType)                   :: Mesh
+  TYPE(cmfe_NodesType)                  :: Nodes
+  TYPE(cmfe_ProblemType)                :: Problem
+  TYPE(cmfe_RegionType)                 :: Region,WorldRegion
+  TYPE(cmfe_SolverType)                 :: Solver
+  TYPE(cmfe_SolverType)                 :: LinearSolver
+  TYPE(cmfe_SolverEquationsType)        :: SolverEquations
+  TYPE(cmfe_ControlLoopType)            :: ControlLoop
 
-  !Generic CMISS variables
-  INTEGER(CMISSIntg) :: Err
+  ! generic CMISS variables
+  INTEGER(CMISSIntg)                    :: Err
 
-  LOGICAL  :: directory_exists = .FALSE.
+  ! local variables
+  LOGICAL                               :: directory_exists = .FALSE.
+  LOGICAL                               :: FileExists
+
+  ! local variables w.r.t. mesh import
+  REAL(CMISSRP),        ALLOCATABLE     :: NodesImport(:,:)           !< The coordinates of the mesh nodes
+  INTEGER(CMISSIntg),   ALLOCATABLE     :: ElementsImport(:,:)        !< The node IDs for each element
+  INTEGER(CMISSIntg),   ALLOCATABLE     :: BoundaryPatchesImport(:) !< The boundary patch labels for all boundary nodes
+  INTEGER(CMISSIntg)                    :: NumberOfElements
+  INTEGER(CMISSIntg)                    :: NumberOfNodesPerElement
+  INTEGER(CMISSIntg)                    :: NumberOfBoundaryPatches
+  INTEGER(CMISSIntg)                    :: ElementIdx,NodeIdx,ComponentIdx,CurrentPatchID,StartIdx,StopIdx
+  REAL(CMISSRP)                         :: x,y,z
 
 #ifdef WIN32
   !Quickwin type
@@ -348,39 +368,66 @@ PROGRAM FORTRANEXAMPLE
     ENDIF
     CALL cmfe_GeneratedMesh_CreateFinish(GeneratedMesh,MeshUserNumber,Mesh,Err)
   ELSE
-    ! TODO user-defined mesh
-    WRITE(*,*) "User-defined mesh not implemented."
-    STOP
-!    ! Start the creation of a manually generated mesh in the region
-!    CALL cmfe_Mesh_CreateStart(meshUserNumber,region,numberOfXi,mesh,Err)
-!    CALL cmfe_Mesh_NumberOfComponentsSet(mesh,numberOfMeshComponents,Err)
-!    IF (useSimplex) THEN
-!      CALL cmfe_Mesh_NumberOfElementsSet(mesh,totalNumberOfElements*5,Err)
-!    ELSE
-!      CALL cmfe_Mesh_NumberOfElementsSet(mesh,totalNumberOfElements,Err)
-!    END IF
-!
-!    ! Define nodes for the mesh
-!    CALL cmfe_Nodes_Initialise(nodes,Err)
-!    CALL cmfe_Nodes_CreateStart(region,totalNumberOfNodes,nodes,Err)
-!    CALL cmfe_Nodes_CreateFinish(nodes,Err)
-!
-!    CALL cmfe_MeshElements_Initialise(elements,Err)
-!    CALL cmfe_MeshElements_CreateStart(mesh,meshComponentNumber,basis,elements,Err)
-!    IF (useSimplex) THEN
-!      CALL cmfe_MeshElements_NodesSet(elements,1,[1,2,4,6],Err)
-!      CALL cmfe_MeshElements_NodesSet(elements,2,[1,4,3,7],Err)
-!      CALL cmfe_MeshElements_NodesSet(elements,3,[1,6,7,5],Err)
-!      CALL cmfe_MeshElements_NodesSet(elements,4,[6,4,7,8],Err)
-!      CALL cmfe_MeshElements_NodesSet(elements,5,[1,6,4,7],Err)
-!    ELSE
-!      CALL cmfe_MeshElements_NodesSet(elements,1,[1,2,3,4,5,6,7,8],Err)
-!    END IF
-!    CALL cmfe_MeshElements_CreateFinish(elements,Err)
-!    CALL cmfe_Mesh_CreateFinish(mesh,Err)
+    ! get user-defined mesh file name
+    WRITE(Filename, "(A26,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A3)") &
+      & "src/cheart/meshes/domain_l", &
+      & INT(WIDTH),"x",INT(HEIGHT),"x",INT(LENGTH), &
+      & "_n", &
+      & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
+      & "_i",DisplacementInterpolationType,"_FE"
+    ! Check whether file exists
+    INQUIRE(FILE=trim(Filename)//".X",EXIST=FileExists)
+    IF(.NOT.FileExists) THEN
+      CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".X")
+    ENDIF
+    INQUIRE(FILE=trim(Filename)//".T",EXIST=FileExists)
+    IF(.NOT.FileExists) THEN
+      CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".T")
+    ENDIF
+    INQUIRE(FILE=trim(Filename)//".B",EXIST=FileExists)
+    IF(.NOT.FileExists) THEN
+      CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".B")
+    ENDIF
+    ! Read CHeart mesh based on the given command line arguments
+    WRITE(*,*) "Reading CHeart mesh data file "//TRIM(Filename)
+    CALL ReadMesh(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
+    WRITE(*,*) NumberOfNodes
+    NumberOfNodes             = SIZE(NodesImport,1)
+    NumberOfDimensions        = SIZE(NodesImport,2)
+    NumberOfElements          = SIZE(ElementsImport,1)
+    NumberOfNodesPerElement   = SIZE(ElementsImport,2)
+    NumberOfBoundaryPatches   = BoundaryPatchesImport(1)
+    WRITE(*,*) NumberOfNodes,NumberOfDimensions,NumberOfElements,NumberOfNodesPerElement,NumberOfBoundaryPatches
+    WRITE(*,*) "...done"
+
+    ! create nodes
+    CALL cmfe_Nodes_Initialise(Nodes,Err)
+    CALL cmfe_Nodes_CreateStart(Region,NumberOfNodes,Nodes,Err)
+    CALL cmfe_Nodes_CreateFinish(Nodes,Err)
+    !create mesh
+    CALL cmfe_Mesh_CreateStart(MeshUserNumber,Region,NumberOfDimensions,Mesh,Err)
+    CALL cmfe_Mesh_NumberOfElementsSet(Mesh,NumberOfElements,Err)
+    CALL cmfe_Mesh_NumberOfComponentsSet(Mesh,2,Err)
+    ! Set up mesh elements for displacement and pressure
+    CALL cmfe_MeshElements_Initialise(DisplacementElements,Err)
+    CALL cmfe_MeshElements_Initialise(PressureElements,Err)
+    CALL cmfe_MeshElements_CreateStart(Mesh,1,DisplacementBasis,DisplacementElements,Err)
+    CALL cmfe_MeshElements_CreateStart(Mesh,PressureMeshComponent,PressureBasis,PressureElements,Err)
+    ! Set element connectivity
+    DO ElementIdx=1,NumberOfElements
+      CALL cmfe_MeshElements_NodesSet(DisplacementElements,ElementIdx, &
+        & ElementsImport(ElementIdx,:),Err)
+      CALL cmfe_MeshElements_NodesSet(PressureElements,ElementIdx, &
+        & ElementsImport(ElementIdx,(/1,3,7,9,19,21,25,27/)),Err)
+    END DO
+    ! Finish mesh elements
+    CALL cmfe_MeshElements_CreateFinish(DisplacementElements,Err)
+    CALL cmfe_MeshElements_CreateFinish(PressureElements,Err)
+    ! Finish mesh
+    CALL cmfe_Mesh_CreateFinish(Mesh,Err)
   END IF
 
-  !Create a decomposition
+  ! create a decomposition
   CALL cmfe_Decomposition_Initialise(Decomposition,Err)
   CALL cmfe_Decomposition_CreateStart(DecompositionUserNumber,Mesh,Decomposition,Err)
   CALL cmfe_Decomposition_TypeSet(Decomposition,CMFE_DECOMPOSITION_CALCULATED_TYPE,Err)
@@ -388,19 +435,45 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_Decomposition_CalculateFacesSet(Decomposition,.TRUE.,Err)
   CALL cmfe_Decomposition_CreateFinish(Decomposition,Err)
 
-  !Create a field to put the geometry (defualt is geometry)
-  CALL cmfe_Field_Initialise(GeometricField,Err)
-  CALL cmfe_Field_CreateStart(FieldGeometryUserNumber,Region,GeometricField,Err)
-  CALL cmfe_Field_MeshDecompositionSet(GeometricField,Decomposition,Err)
-  CALL cmfe_Field_VariableLabelSet(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,"Undeformed",Err)
-  CALL cmfe_Field_ScalingTypeSet(GeometricField,ScalingType,Err)
-  CALL cmfe_Field_CreateFinish(GeometricField,Err)
-
-  !Update the geometric field parameters
+  ! define geometry
   IF (useGeneratedMesh==1) THEN
+    ! create a field to put the geometry (default is geometry)
+    CALL cmfe_Field_Initialise(GeometricField,Err)
+    CALL cmfe_Field_CreateStart(FieldGeometryUserNumber,Region,GeometricField,Err)
+    CALL cmfe_Field_MeshDecompositionSet(GeometricField,Decomposition,Err)
+    CALL cmfe_Field_VariableLabelSet(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,"Undeformed",Err)
+    CALL cmfe_Field_ScalingTypeSet(GeometricField,ScalingType,Err)
+    CALL cmfe_Field_CreateFinish(GeometricField,Err)
     CALL cmfe_GeneratedMesh_GeometricParametersCalculate(GeneratedMesh,GeometricField,Err)
   ELSE
-    ! TODO
+    ! create a field to put the geometry (default is geometry)
+    CALL cmfe_Field_Initialise(GeometricField,Err)
+    CALL cmfe_Field_CreateStart(FieldGeometryUserNumber,Region,GeometricField,Err)
+    CALL cmfe_Field_MeshDecompositionSet(GeometricField,Decomposition,Err)
+    CALL cmfe_Field_VariableLabelSet(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,"Undeformed",Err)
+    CALL cmfe_Field_ScalingTypeSet(GeometricField,ScalingType,Err)
+    CALL cmfe_Field_NumberOfComponentsSet(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,NumberOfDimensions,Err)
+    DO NodeIdx=1,NumberOfDimensions
+      CALL cmfe_Field_ComponentMeshComponentSet(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,NodeIdx,1,Err)
+    END DO
+    CALL cmfe_Field_CreateFinish(GeometricField,Err)
+    !== update the geometric field parameters from the imported node coordinates
+    ! for all node IDs
+    DO NodeIdx=1,NumberOfNodes
+      WRITE(*,*) NodeIdx
+      CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeIdx,1,NodeDomain,Err)
+      ! check if node is present in this processors' computational domain
+      IF(NodeDomain==ComputationalNodeNumber) THEN
+        ! for all components
+        DO ComponentIdx=1,NumberOfDimensions
+          ! update coordinates
+          CALL cmfe_Field_ParameterSetUpdateNode(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE, &
+            & CMFE_FIELD_VALUES_SET_TYPE,1,CMFE_NO_GLOBAL_DERIV,NodeIdx,ComponentIdx, &
+            & NodesImport(NodeIdx,ComponentIdx),Err)
+        END DO
+      END IF
+    END DO
+    WRITE(*,*) "User-defined geometric field done."
   END IF
 
   !Create a fibre field and attach it to the geometric field
@@ -447,7 +520,7 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_Field_VariableLabelSet(MaterialField,CMFE_FIELD_V_VARIABLE_TYPE,"Density",Err)
   CALL cmfe_EquationsSet_MaterialsCreateFinish(EquationsSet,Err)
 
-  !Set Mooney-Rivlin constants c10 and c01 to 2.0 and 6.0 respectively
+  !Set Mooney-Rivlin constants c10 and c01
   CALL cmfe_Field_ComponentValuesInitialise(MaterialField,CMFE_FIELD_U_VARIABLE_TYPE,CMFE_FIELD_VALUES_SET_TYPE, &
     & 1,MooneyRivlin1,Err)
   CALL cmfe_Field_ComponentValuesInitialise(MaterialField,CMFE_FIELD_U_VARIABLE_TYPE,CMFE_FIELD_VALUES_SET_TYPE, &
@@ -485,8 +558,10 @@ PROGRAM FORTRANEXAMPLE
 
   !Define the problem
   CALL cmfe_Problem_Initialise(Problem,Err)
-  CALL cmfe_Problem_CreateStart(ProblemUserNumber,[CMFE_PROBLEM_ELASTICITY_CLASS,CMFE_PROBLEM_FINITE_ELASTICITY_TYPE, &
-    & CMFE_PROBLEM_NO_SUBTYPE],Problem,Err)
+  CALL cmfe_Problem_CreateStart(ProblemUserNumber, &
+    & [CMFE_PROBLEM_ELASTICITY_CLASS, &
+    &  CMFE_PROBLEM_FINITE_ELASTICITY_TYPE, &
+    &  CMFE_PROBLEM_NO_SUBTYPE],Problem,Err)
   CALL cmfe_Problem_CreateFinish(Problem,Err)
 
   !Create the problem control loop
@@ -534,66 +609,141 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_SolverEquations_BoundaryConditionsCreateStart(SolverEquations,BoundaryConditions,Err)
   CALL cmfe_BoundaryConditions_NeumannSparsityTypeSet(BoundaryConditions,CMFE_BOUNDARY_CONDITION_SPARSE_MATRICES,Err)
 
-  CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_LEFT_SURFACE,LeftSurfaceNodes,LeftNormalXi,Err)
-  CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE,RightSurfaceNodes,RightNormalXi,Err)
+  IF(useGeneratedMesh==1) THEN
+    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_LEFT_SURFACE,LeftSurfaceNodes,LeftNormalXi,Err)
+    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE,RightSurfaceNodes,RightNormalXi,Err)
 
-  ! Dirichlet BC at x=0
-  DO node_idx=1,SIZE(LeftSurfaceNodes,1)
-    NodeNumber=LeftSurfaceNodes(node_idx)
-    CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
-    IF(NodeDomain==ComputationalNodeNumber) THEN
-      ! constrain x-direction
-      CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-        & 1,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
-    ENDIF
-  ENDDO
-  ! Dirichlet BC at x=0, y=ly/2, z=z/2
-  NodeNumber=(NumberOfNodes/2)+1-((2*NumberGlobalXElements+1)/2) ! implicit FLOOR() !!!
-  CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
-  IF(NodeDomain==ComputationalNodeNumber) THEN
-    DO component_idx=2,NumberOfDimensions
-      CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-        & component_idx,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
-    END DO
-  END IF
-
-  ! stretch
-  lambda  = (1.0_CMISSRP+BCDISP_MAX)
-  IF(bcDirichlet==1) THEN
-    WRITE(*,*) "Applying displacement BC.."
-    ! Dirichlet BC at x=lx
-    DO node_idx=1,SIZE(RightSurfaceNodes,1)
-      NodeNumber=RightSurfaceNodes(node_idx)
+    ! Dirichlet BC at x=0
+    DO node_idx=1,SIZE(LeftSurfaceNodes,1)
+      NodeNumber=LeftSurfaceNodes(node_idx)
       CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
       IF(NodeDomain==ComputationalNodeNumber) THEN
         ! constrain x-direction
-        CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-          & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
+        CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+          & 1,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
       ENDIF
     ENDDO
+    ! Dirichlet BC at x=0, y=ly/2, z=z/2
+    NodeNumber=(NumberOfNodes/2)+1-((2*NumberGlobalXElements+1)/2) ! implicit FLOOR() !!!
+    CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+    IF(NodeDomain==ComputationalNodeNumber) THEN
+      DO component_idx=2,NumberOfDimensions
+        CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+          & component_idx,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
+      END DO
+    END IF
+
+    ! stretch
+    lambda  = (1.0_CMISSRP+BCDISP_MAX)
+    IF(bcDirichlet==1) THEN
+      WRITE(*,*) "Applying displacement BC.."
+      ! Dirichlet BC at x=lx
+      DO node_idx=1,SIZE(RightSurfaceNodes,1)
+        NodeNumber=RightSurfaceNodes(node_idx)
+        CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        IF(NodeDomain==ComputationalNodeNumber) THEN
+          ! constrain x-direction
+          CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
+        ENDIF
+      ENDDO
+    ELSE
+      WRITE(*,*) "Applying traction BC.."
+      ! corresponding traction value
+      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
+      WRITE(*,*) "  getting nodal weights"
+      ! compute consistent nodal weights
+      CALL GeneratedMesh_SurfaceWeightsGet(nodalWeights,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE, &
+        & numberGlobalXelements,numberGlobalYelements,numberGlobalZelements,Err)
+      WRITE(*,*) "  applying consistent nodal forces"
+      ! apply consistent nodal forces based on nodal weights
+      ! Neumann BC at x=lx
+      DO node_idx=1,SIZE(RightSurfaceNodes,1)
+        NodeNumber=RightSurfaceNodes(node_idx)
+        CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        IF(NodeDomain==ComputationalNodeNumber) THEN
+          NodalForce=NeumannBCvalue*nodalWeights(node_idx)
+          CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
+            & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
+        ENDIF
+      ENDDO
+    END IF
   ELSE
-    WRITE(*,*) "Applying traction BC.."
-    ! corresponding traction value
-    NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
-    WRITE(*,*) "  getting nodal weights"
-    ! compute consistent nodal weights
-    CALL GeneratedMesh_SurfaceWeightsGet(nodalWeights,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE, &
-      & numberGlobalXelements,numberGlobalYelements,numberGlobalZelements,Err)
-    WRITE(*,*) "  applying consistent nodal forces"
-    ! apply consistent nodal forces based on nodal weights
-    ! Neumann BC at x=lx
-    DO node_idx=1,SIZE(RightSurfaceNodes,1)
-      NodeNumber=RightSurfaceNodes(node_idx)
+    !=== Wall boundary
+    ! Get index in boundary file
+    CurrentPatchID=1
+    CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+    ! Now, set boundary condition
+    DO NodeIdx=StartIdx,StopIdx
+      NodeNumber=BoundaryPatchesImport(NodeIdx)
       CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
       IF(NodeDomain==ComputationalNodeNumber) THEN
-        NodalForce=NeumannBCvalue*nodalWeights(node_idx)
-        CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
-          & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
-          & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
-      ENDIF
-    ENDDO
+        CALL cmfe_Field_ParameterSetGetNode( &
+          & GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,1, &
+          & 1,1,NodeNumber,1,x,Err)
+        CALL cmfe_Field_ParameterSetGetNode( &
+          & GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,1, &
+          & 1,1,NodeNumber,2,y,Err)
+        CALL cmfe_Field_ParameterSetGetNode( &
+          & GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,1, &
+          & 1,1,NodeNumber,3,z,Err)
+        CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+          & 1,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
+        ! constrain center-node also in y- and z-direction
+        IF((ABS(y-0.5*HEIGHT)<1.0e-12).AND.(ABS(z-0.5*LENGTH)<1.0e-12)) THEN
+          CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 2,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
+          CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 3,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
+        END IF
+      END IF
+    END DO
+    WRITE(*,*) "Wall BC done."
+    !=== displacement/traction boundary
+    ! Get index in boundary file
+    CurrentPatchID=2
+    CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
+    
+    ! Now, set boundary condition
+    node_idx  = 1
+    DO NodeIdx=StartIdx,StopIdx
+      NodeNumber=BoundaryPatchesImport(NodeIdx)
+      CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+      IF(NodeDomain==ComputationalNodeNumber) THEN
+        ! stretch
+        lambda  = (1.0_CMISSRP+BCDISP_MAX)
+        ! applyt Dirichlet or Neumann BC
+        IF(bcDirichlet==1) THEN
+          WRITE(*,*) "Applying displacement BC.."
+          ! Dirichlet BC at x=lx
+          CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+          IF(NodeDomain==ComputationalNodeNumber) THEN
+            CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+              & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
+          END IF
+        ELSE
+          WRITE(*,*) "Applying traction BC.."
+          ! corresponding traction value
+          NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
+          WRITE(*,*) "  getting nodal weights"
+          ! compute consistent nodal weights
+          CALL ImportedMesh_SurfaceWeightsGet(nodalWeights,NumberOfNodesPerElement,Err)
+          WRITE(*,*) "  applying consistent nodal forces"
+          ! apply consistent nodal forces based on nodal weights
+          ! Neumann BC at x=lx
+          NodalForce=NeumannBCvalue*nodalWeights(node_idx)/(NumberGlobalYElements*NumberGlobalZElements)
+          CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
+            & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
+        END IF
+      END IF
+      node_idx  = node_idx + 1
+      IF(node_idx>9) node_idx = 1
+    END DO
   END IF
 
+  ! finish BC
   CALL cmfe_SolverEquations_BoundaryConditionsCreateFinish(SolverEquations,Err)
 
   !Solve problem
@@ -659,7 +809,10 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_Fields_ElementsExport(Fields,filename,"FORTRAN",Err)
   CALL cmfe_Fields_Finalise(Fields,Err)
 
-  IF(ALLOCATED(nodalWeights)) DEALLOCATE(nodalWeights)
+  IF(ALLOCATED(nodalWeights))           DEALLOCATE(nodalWeights)
+  IF(ALLOCATED(NodesImport))            DEALLOCATE(NodesImport)
+  IF(ALLOCATED(ElementsImport))         DEALLOCATE(ElementsImport)
+  IF(ALLOCATED(BoundaryPatchesImport))  DEALLOCATE(BoundaryPatchesImport)
   CALL cmfe_Finalise(Err)
 
   WRITE(*,'(A)') "Program successfully completed."
