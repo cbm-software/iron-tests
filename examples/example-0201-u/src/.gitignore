@@ -1,0 +1,4 @@
+*.ex*
+*.diag
+*.out
+gmon.out
