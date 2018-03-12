@@ -787,6 +787,8 @@ PROGRAM FORTRANEXAMPLE
         node_idx  = node_idx + 1
         IF(node_idx>9) node_idx = 1
       END DO
+      WRITE(*,*) "Warning: BC type 2 not fully implemented for user-defined mesh."
+      STOP
     END IF
   END IF
 
