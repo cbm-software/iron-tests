@@ -79,7 +79,7 @@ PROGRAM FORTRANEXAMPLE
   REAL(CMISSRP), PARAMETER :: Density=0.0E-4_CMISSRP !in g mm^-3
   REAL(CMISSRP), PARAMETER :: Gravity(3)=[0.0_CMISSRP,0.0_CMISSRP,0.0_CMISSRP] !in m s^-2
   INTEGER(CMISSIntg) :: NumberOfLoadIncrements=1
-  INTEGER(CMISSIntg) :: useGeneratedMesh,bcDirichlet
+  INTEGER(CMISSIntg) :: useGeneratedMesh,bcType
   INTEGER(CMISSIntg), ALLOCATABLE :: nodeNumbers(:)
   REAL(CMISSRP),      ALLOCATABLE :: nodalWeights(:)
 
@@ -245,8 +245,8 @@ PROGRAM FORTRANEXAMPLE
     ! Do boundary condition as Dirichlet?
     CALL GET_COMMAND_ARGUMENT(13,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
     IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 13.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) bcDirichlet
-    IF((bcDirichlet<0).OR.(bcDirichlet>1)) CALL HANDLE_ERROR("Invalid BC type.")
+    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) bcType
+    IF((bcType<0).OR.(bcType>2)) CALL HANDLE_ERROR("Invalid BC type.")
   ELSE
     ! defaults for input arguments
     WIDTH                         = 1.0_CMISSRP
@@ -261,7 +261,7 @@ PROGRAM FORTRANEXAMPLE
     MooneyRivlin2                 = 0.0_CMISSRP  ! If MooneyRivlin2 == 0 --> Neo-Hookean solid
     useGeneratedMesh              = 1 ! generated mesh by default
     BCDISP_MAX                    = 0.2_CMISSRP
-    bcDirichlet                   = 1 ! Dirichlet BC by default
+    bcType                        = 0 ! 0 - Dirichlet BC by default; else: 1 - Neumann_integrated, 2 - Neumann_point
   ENDIF
   IF(NumberGlobalZElements >= 1) THEN
     NumberOfDimensions  = 3
@@ -391,13 +391,11 @@ PROGRAM FORTRANEXAMPLE
     ! Read CHeart mesh based on the given command line arguments
     WRITE(*,*) "Reading CHeart mesh data file "//TRIM(Filename)
     CALL ReadMesh(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
-    WRITE(*,*) NumberOfNodes
     NumberOfNodes             = SIZE(NodesImport,1)
     NumberOfDimensions        = SIZE(NodesImport,2)
     NumberOfElements          = SIZE(ElementsImport,1)
     NumberOfNodesPerElement   = SIZE(ElementsImport,2)
     NumberOfBoundaryPatches   = BoundaryPatchesImport(1)
-    WRITE(*,*) NumberOfNodes,NumberOfDimensions,NumberOfElements,NumberOfNodesPerElement,NumberOfBoundaryPatches
     WRITE(*,*) "...done"
 
     ! create nodes
@@ -460,7 +458,6 @@ PROGRAM FORTRANEXAMPLE
     !== update the geometric field parameters from the imported node coordinates
     ! for all node IDs
     DO NodeIdx=1,NumberOfNodes
-      WRITE(*,*) NodeIdx
       CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeIdx,1,NodeDomain,Err)
       ! check if node is present in this processors' computational domain
       IF(NodeDomain==ComputationalNodeNumber) THEN
@@ -585,13 +582,21 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_Solver_NewtonAbsoluteToleranceSet(Solver,1.0E-12_CMISSRP,Err)
   CALL cmfe_Solver_NewtonSolutionToleranceSet(Solver,1.0E-12_CMISSRP,Err)
   CALL cmfe_Solver_NewtonRelativeToleranceSet(Solver,1.0E-12_CMISSRP,Err)
+  CALL cmfe_Solver_NewtonLineSearchTypeSet(Solver,CMFE_SOLVER_NEWTON_LINESEARCH_LINEAR,Err)
+  CALL cmfe_Solver_NewtonLineSearchMonitorOutputSet(Solver,.TRUE.,Err)
   CALL cmfe_Solver_NewtonLinearSolverGet(Solver,LinearSolver,Err)
   ! Chose Solver Type
   IF(SolverIsDirect==1) THEN
     CALL cmfe_Solver_LinearTypeSet(LinearSolver,CMFE_SOLVER_LINEAR_DIRECT_SOLVE_TYPE,Err) !<Direct linear solver type.
   ELSE
     CALL cmfe_Solver_LinearTypeSet(LinearSolver,CMFE_SOLVER_LINEAR_ITERATIVE_SOLVE_TYPE,Err) !<Iterative linear solver type.
-  ENDIF
+    !NO,JACOBI,BLOCK_JACOBI,SOR,INCOMPLETE_CHOLESKY,INCOMPLETE_LU,ADDITIVE_SCHWARZ
+    CALL cmfe_Solver_LinearIterativePreconditionerTypeSet(LinearSolver,CMFE_SOLVER_ITERATIVE_BLOCK_JACOBI_PRECONDITIONER,Err)
+    CALL cmfe_Solver_LinearIterativeMaximumIterationsSet(LinearSolver,1000,Err)
+    CALL cmfe_Solver_LinearIterativeAbsoluteToleranceSet(LinearSolver,1.0E-12_CMISSRP,Err)
+    CALL cmfe_Solver_LinearIterativeRelativeToleranceSet(LinearSolver,1.0E-12_CMISSRP,Err)
+    CALL cmfe_Solver_LinearIterativeDivergenceToleranceSet(LinearSolver,1.0E+8_CMISSRP,Err)
+  END IF
   CALL cmfe_Problem_SolversCreateFinish(Problem,Err)
 
   !Create the problem solver equations
@@ -609,6 +614,7 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_SolverEquations_BoundaryConditionsCreateStart(SolverEquations,BoundaryConditions,Err)
   CALL cmfe_BoundaryConditions_NeumannSparsityTypeSet(BoundaryConditions,CMFE_BOUNDARY_CONDITION_SPARSE_MATRICES,Err)
 
+  ! generated mesh
   IF(useGeneratedMesh==1) THEN
     CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_LEFT_SURFACE,LeftSurfaceNodes,LeftNormalXi,Err)
     CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE,RightSurfaceNodes,RightNormalXi,Err)
@@ -635,7 +641,7 @@ PROGRAM FORTRANEXAMPLE
 
     ! stretch
     lambda  = (1.0_CMISSRP+BCDISP_MAX)
-    IF(bcDirichlet==1) THEN
+    IF(bcType==0) THEN
       WRITE(*,*) "Applying displacement BC.."
       ! Dirichlet BC at x=lx
       DO node_idx=1,SIZE(RightSurfaceNodes,1)
@@ -647,7 +653,7 @@ PROGRAM FORTRANEXAMPLE
             & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
         ENDIF
       ENDDO
-    ELSE
+    ELSE IF(bcType==1) THEN
       WRITE(*,*) "Applying traction BC.."
       ! corresponding traction value
       NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
@@ -668,7 +674,25 @@ PROGRAM FORTRANEXAMPLE
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
         ENDIF
       ENDDO
+    ELSE IF(bcType==2) THEN
+      WRITE(*,*) "Applying traction BC.."
+      ! corresponding traction value
+      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda)
+      WRITE(*,*) "  applying point forces"
+      ! apply point forces, Neumann BC at x=lx
+      DO node_idx=1,SIZE(RightSurfaceNodes,1)
+        NodeNumber=RightSurfaceNodes(node_idx)
+        CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        IF(NodeDomain==ComputationalNodeNumber) THEN
+          CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField, &
+            & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue,Err)
+        ENDIF
+      ENDDO
+      WRITE(*,*) "Warning: BC type 2 not fully implemented for generated mesh."
+      STOP
     END IF
+  ! user-defined mesh
   ELSE
     !=== Wall boundary
     ! Get index in boundary file
@@ -701,35 +725,40 @@ PROGRAM FORTRANEXAMPLE
     END DO
     WRITE(*,*) "Wall BC done."
     !=== displacement/traction boundary
+    ! stretch
+    lambda  = (1.0_CMISSRP+BCDISP_MAX)
     ! Get index in boundary file
     CurrentPatchID=2
     CALL ImportedMesh_SurfaceGet(BoundaryPatchesImport,CurrentPatchID,StartIdx,StopIdx,Err)
-    
-    ! Now, set boundary condition
-    node_idx  = 1
-    DO NodeIdx=StartIdx,StopIdx
-      NodeNumber=BoundaryPatchesImport(NodeIdx)
-      CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
-      IF(NodeDomain==ComputationalNodeNumber) THEN
-        ! stretch
-        lambda  = (1.0_CMISSRP+BCDISP_MAX)
-        ! applyt Dirichlet or Neumann BC
-        IF(bcDirichlet==1) THEN
-          WRITE(*,*) "Applying displacement BC.."
+    ! apply Dirichlet BC
+    IF(bcType==0) THEN
+      WRITE(*,*) "Applying displacement BC.."
+      node_idx  = 1
+      DO NodeIdx=StartIdx,StopIdx
+        NodeNumber=BoundaryPatchesImport(NodeIdx)
+        CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        IF(NodeDomain==ComputationalNodeNumber) THEN
           ! Dirichlet BC at x=lx
-          CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
-          IF(NodeDomain==ComputationalNodeNumber) THEN
-            CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-              & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
-          END IF
-        ELSE
-          WRITE(*,*) "Applying traction BC.."
-          ! corresponding traction value
-          NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
-          WRITE(*,*) "  getting nodal weights"
-          ! compute consistent nodal weights
-          CALL ImportedMesh_SurfaceWeightsGet(nodalWeights,NumberOfNodesPerElement,Err)
-          WRITE(*,*) "  applying consistent nodal forces"
+          CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
+        END IF
+        node_idx  = node_idx + 1
+        IF(node_idx>9) node_idx = 1
+      END DO
+    ! apply Neumann integrated BC
+    ELSE IF(bcType==1) THEN
+      WRITE(*,*) "Applying traction BC.."
+      node_idx  = 1
+      ! corresponding traction value
+      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
+      WRITE(*,*) "  getting nodal weights"
+      ! compute consistent nodal weights
+      CALL ImportedMesh_SurfaceWeightsGet(nodalWeights,NumberOfNodesPerElement,Err)
+      WRITE(*,*) "  applying consistent nodal forces"
+      DO NodeIdx=StartIdx,StopIdx
+        NodeNumber=BoundaryPatchesImport(NodeIdx)
+        CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        IF(NodeDomain==ComputationalNodeNumber) THEN
           ! apply consistent nodal forces based on nodal weights
           ! Neumann BC at x=lx
           NodalForce=NeumannBCvalue*nodalWeights(node_idx)/(NumberGlobalYElements*NumberGlobalZElements)
@@ -737,10 +766,28 @@ PROGRAM FORTRANEXAMPLE
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
         END IF
-      END IF
-      node_idx  = node_idx + 1
-      IF(node_idx>9) node_idx = 1
-    END DO
+        node_idx  = node_idx + 1
+        IF(node_idx>9) node_idx = 1
+      END DO
+    ! apply Neumann point BC
+    ELSE IF(bcType==2) THEN
+      WRITE(*,*) "Applying traction BC.."
+      node_idx  = 1
+      ! corresponding traction value
+      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda)
+      DO NodeIdx=StartIdx,StopIdx
+        NodeNumber=BoundaryPatchesImport(NodeIdx)
+        CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        IF(NodeDomain==ComputationalNodeNumber) THEN
+          ! Neumann BC at x=lx
+          CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField, &
+            & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue,Err)
+        END IF
+        node_idx  = node_idx + 1
+        IF(node_idx>9) node_idx = 1
+      END DO
+    END IF
   END IF
 
   ! finish BC
@@ -759,7 +806,7 @@ PROGRAM FORTRANEXAMPLE
       & "_n", &
       & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
       & "_i",displacementInterpolationType,"_s",SolverIsDirect, &
-      & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcDirichlet
+      & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcType
     ! make sure directories exist
     INQUIRE(file="./results/", exist=directory_exists)
     IF (.NOT.directory_exists) THEN
@@ -785,7 +832,7 @@ PROGRAM FORTRANEXAMPLE
       & "_n", &
       & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
       & "_i",displacementInterpolationType,"_s",SolverIsDirect, &
-      & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcDirichlet
+      & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcType
     ! make sure directories exist
     INQUIRE(file="./results/", exist=directory_exists)
     IF (.NOT.directory_exists) THEN
