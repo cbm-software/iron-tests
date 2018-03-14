@@ -6,6 +6,7 @@
 ################################################################################
 import numpy as np
 import sys
+import os
 ################################################################################
 print "Numpy version: "+np.version.version
 ################################################################################
@@ -24,16 +25,16 @@ blocksize     = 15
 tolx          = 1.0e-6
 # tolerance used to check numerical solution
 tolu          = 1.0e-10
-tolu_ch       = 0.0066
+tolu_ch       = 0.00485
 
 failedtests_file = open("failed.tests", "w")
 
 # for all solver types
-for s in np.arange(1, 2, 1):
+for s in np.arange(0, 2, 1):
     # for Jacobian type
-    for i in np.arange(1, 2, 1):
+    for i in np.arange(0, 2, 1):
         # for BC type
-        for r in np.arange(0, 1, 1):
+        for r in np.arange(0, 3, 1):
             NumberOfTests += 1
             ####################################################################
             # read reference data
@@ -52,6 +53,14 @@ for s in np.arange(1, 2, 1):
             ivals0      = 0.0 * cvals
             ivals0P     = 0.0 * cvalsP
             foldername  = "reference/iron/"+"s"+str(s)+"_fd"+str(i)+"_bc"+str(r)+"/"
+            if not(os.path.isdir(foldername)):
+                status = "    Folder "+foldername+" does not exist."
+                print status
+                if (NumberOfFailedTests == 0):
+                    failedtests_file.write("Failed tests:\n")
+                failedtests_file.write(status+"\n")
+                NumberOfFailedTests += 1
+                continue
             filename    = foldername + "Example.part0.exnode"
             linecount = 0
             matched   = 0
@@ -236,10 +245,19 @@ for s in np.arange(1, 2, 1):
                 print "wrong total number of nodes",matched," ",cxyz.shape[0]
                 sys.exit()
             ####################################################################
-            # compute difference; normalized RMSE
-            l2diff_ci   = np.sqrt( \
-                (np.linalg.norm(cvals-ivals, 2) / np.sqrt(cvals.shape[0]) / 2.20)**2.0 \
-                + (np.linalg.norm(cvalsP-ivalsP, 2) / np.sqrt(cvalsP.shape[0]) / 2.38)**2.0)
+            # compute difference; RSE of normalized RMSE of components
+            l2diff_ci   = np.sqrt(0.0 \
+                + (np.linalg.norm(cvals[:,0]-ivals[:,0], 2) / np.sqrt(cvals.shape[0]) / 2.20)**2.0 \
+                + (np.linalg.norm(cvals[:,1]-ivals[:,1], 2) / np.sqrt(cvals.shape[0]) / 3.55)**2.0 \
+                + (np.linalg.norm(cvals[:,2]-ivals[:,2], 2) / np.sqrt(cvals.shape[0]) / 2.03)**2.0 \
+                + (np.linalg.norm(cvalsP-ivalsP, 2) / np.sqrt(cvalsP.shape[0]) / 2.38)**2.0 \
+                )
+            l2diff_i0i  = np.sqrt(0.0 \
+                + (np.linalg.norm(ivals0[:,0]-ivals[:,0], 2) / np.sqrt(ivals0.shape[0]) / 2.20)**2.0 \
+                + (np.linalg.norm(ivals0[:,1]-ivals[:,1], 2) / np.sqrt(ivals0.shape[0]) / 3.55)**2.0 \
+                + (np.linalg.norm(ivals0[:,2]-ivals[:,2], 2) / np.sqrt(ivals0.shape[0]) / 2.03)**2.0 \
+                + (np.linalg.norm(ivals0P-ivalsP, 2) / np.sqrt(ivals0P.shape[0]) / 2.38)**2.0 \
+                )
             l2diff_i0i  = np.linalg.norm(ivals0-ivals, 2) / np.sqrt(cvals.shape[0]) / 2.20
             if ((l2diff_ci > tolu_ch) and (l2diff_i0i > tolu)):
                 status = filename+"       | CHeart   - Iron |_2 = "+str(l2diff_ci) \

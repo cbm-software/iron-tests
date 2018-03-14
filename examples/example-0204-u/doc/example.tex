@@ -46,19 +46,14 @@ Note: The pressure has an opposite sign compared to CHeart and KerMOR.
 %
 \begin{itemize}
     \item{Commandline arguments are:}
-        \subitem{float: initial length along x-direction}
-        \subitem{float: initial length along y-direction}
-        \subitem{float: initial length along z-direction}
-        \subitem{integer: number of elements in x-direction}
-        \subitem{integer: number of elements in y-direction}
-        \subitem{integer: number of elements in z-direction}
-        \subitem{integer: use direct solver?}
-        \subitem{integer: use finite-difference Jacobian}
+        \subitem{string: Mesh input file}
+        \subitem{integer: solver type (0 - iterative, 1 - direct)}
+        \subitem{integer: Jacobian type (0 - analytic, 1 - finite difference)}
         \subitem{float: 1st Mooney-Rivlin parameter}
         \subitem{float: 2nd Mooney-Rivlin parameter (set to zero)}
-        \subitem{integer: use generated mesh?}
-        \subitem{float: maximum stretch}
-        \subitem{integer: use only Dirichlet BC?}
+        \subitem{float: absolute displacement at top surface in each coordinate direction}
+        \subitem{integer: number of load increments}
+        \subitem{integer: BC type at top surface(0 - Dirichlet BC, 1 - Neumann\_integrated, 2 - Neumann\_point)}
     \item{Commandline arguments for tests are:}
         \subitem{TBD}
     \item{Note: Binary uses command line arguments to search for the relevant mesh files if user-defined meshes are selected.}
@@ -69,7 +64,8 @@ Note: The pressure has an opposite sign compared to CHeart and KerMOR.
 \subsubsection{Result summary}
 %
 We use CHeart revision 6411 to compare all displacement components and the
-pressure field (reference value: normalized $RMSE = 0.00654298874067$).
+pressure field (reference value: RSE of normalized RMSE of components is
+$0.00484848482722$).
 %
 \verbatiminput{examples/example-0204-u/results/results.summary}
 \verbatiminput{examples/example-0204-u/results/failed.tests}

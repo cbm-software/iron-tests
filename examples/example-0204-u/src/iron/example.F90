@@ -587,7 +587,7 @@ PROGRAM FORTRANEXAMPLE
 
   ! convenience switch for creating reference results
   ! TODO remove before release
-  IF(.FALSE.) THEN
+  IF(.TRUE.) THEN
     ! Set export file name
     WRITE(Filename, "(A24,I1,A3,I1,A3,I1)") &
       & "results/reference/iron/s",SolverIsDirect, &
