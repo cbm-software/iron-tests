@@ -1,0 +1,46 @@
+ % Setting the element type
+ %   (options: POINT_ELEMENT, ONED_ELEMENT, TRIANGLE_ELEMENT,
+ %             QUADRILATERAL_ELEMENT, TETRAHEDRAL_ELEMENT, HEXAHEDRAL_ELEMENT)
+ #ElementType=HEXAHEDRAL_ELEMENT
+
+ % Initial Interpolation
+ %   (options: NODAL_LAGRANGE#, where # is the order)
+ #InitialInterp=NODAL_LAGRANGE2
+
+ % Initial topology file
+ #InitialTopology=FinalModel_quad
+
+ % Initial node coordinates file
+ #InitialX=FinalModel_quad
+
+ % SpatialDimension
+ #dim=3
+
+ % Final Interpolation
+ %   (options: NODAL_LAGRANGE#, where # is the order)
+ #FinalInterp=NODAL_LAGRANGE1
+
+ % Output root file name
+ #FinalName=FinalModel_lin
+
+ % Main Command(s) 
+ !CreateNewMesh={#FinalName | FinalBasis} % Use this for most cases
+
+ % ...to create mesh in boundary, uncomment and replace # with patch ID
+ %  !CreateNewMeshInBoundary={#FinalName | FinalBasis | #} 
+
+ % Optional flags: 
+ % !FindNeighbours % Uncomment to find neighbors (NBT) file
+ % !MakeDiscontinuous={} % Uncomment to specify output mesh as piecewise discontinuous
+
+
+
+ %  ---  START OF P-FILE  -----------------------------------------------------
+ !UseBasis={InitBasis|#ElementType|#InitialInterp|GAUSS_LEGENDRE5}
+ !UseBasis={FinalBasis  |#ElementType|#FinalInterp  |GAUSS_LEGENDRE5}
+
+ !DefTopology={TP1| #InitialTopology | InitBasis}
+
+ !DefVariablePointer={InitialMesh| TP1 | #InitialX | #dim }
+
+ %  ---  END OF P-FILE  -----------------------------------------------------

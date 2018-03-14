@@ -67,7 +67,7 @@ PROGRAM FORTRANEXAMPLE
   REAL(CMISSRP) :: MooneyRivlin1,MooneyRivlin2
   ! for Neo-Hookean solid, set MooneyRivlin2==0 and MooneyRivlin1 consistent
   ! with the 1st Piola-Kirchhoff stress tensor:
-  ! P = 2.0 * MooneyRivlin1 / (det F)^(2/NumberOfDimensions) * (F - (F : F) / NumberOfDimensions * F^{-T}) - pressure * F^{-T}
+  ! P = 2.0 * MooneyRivlin1 / (det F)^(2/NumberOfDimensions) * (F - (F : F) / NumberOfDimensions * F^{-T}) + pressure * F^{-T}
   REAL(CMISSRP) :: BCDISP_MAX,NeumannBCvalue,lambda,areaChange,GaussXi,NodalForce
   INTEGER(CMISSIntg) :: DisplacementInterpolationType
   INTEGER(CMISSIntg) :: PressureInterpolationType
@@ -733,7 +733,6 @@ PROGRAM FORTRANEXAMPLE
     ! apply Dirichlet BC
     IF(bcType==0) THEN
       WRITE(*,*) "Applying displacement BC.."
-      node_idx  = 1
       DO NodeIdx=StartIdx,StopIdx
         NodeNumber=BoundaryPatchesImport(NodeIdx)
         CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
@@ -742,8 +741,6 @@ PROGRAM FORTRANEXAMPLE
           CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
         END IF
-        node_idx  = node_idx + 1
-        IF(node_idx>9) node_idx = 1
       END DO
     ! apply Neumann integrated BC
     ELSE IF(bcType==1) THEN
@@ -772,7 +769,6 @@ PROGRAM FORTRANEXAMPLE
     ! apply Neumann point BC
     ELSE IF(bcType==2) THEN
       WRITE(*,*) "Applying traction BC.."
-      node_idx  = 1
       ! corresponding traction value
       NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda)
       DO NodeIdx=StartIdx,StopIdx
@@ -784,8 +780,6 @@ PROGRAM FORTRANEXAMPLE
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue,Err)
         END IF
-        node_idx  = node_idx + 1
-        IF(node_idx>9) node_idx = 1
       END DO
       WRITE(*,*) "Warning: BC type 2 not fully implemented for user-defined mesh."
       STOP

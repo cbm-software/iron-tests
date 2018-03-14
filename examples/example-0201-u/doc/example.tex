@@ -23,7 +23,7 @@ We solve the following scalar equation,
 with 1st Piola-Kirchhoff stress tensor in $d$ dimensions,
 %
 \begin{align}
-    \boldsymbol{P} &= \frac{2 \mu}{[\det F]^{2/d}} \left( \boldsymbol{F} - \frac{\boldsymbol{F} : \boldsymbol{F}}{d} \boldsymbol{F}^{-T} \right) - p \boldsymbol{F}^{-T}
+    \boldsymbol{P} &= \frac{2 \mu}{[\det F]^{2/d}} \left( \boldsymbol{F} - \frac{\boldsymbol{F} : \boldsymbol{F}}{d} \boldsymbol{F}^{-T} \right) + p \boldsymbol{F}^{-T}
 \end{align}
 %
 corresponding to a Neo-Hookean constitutive law (Neo-Hooke parameter $\mu$)
@@ -48,6 +48,8 @@ or Dirichlet/Neumann boundary conditions
 \end{align}
 %
 with stretch $\lambda$ and traction $\boldsymbol{t}$.
+
+Note: The pressure has an opposite sign compared to CHeart and KerMOR.
 %
 %===============================================================================
 %

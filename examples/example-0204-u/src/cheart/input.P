@@ -1,0 +1,57 @@
+#SolidElement=HEXAHEDRAL_ELEMENT
+#SolidPressure=NODAL_LAGRANGE1
+#SolidDisplacement=NODAL_LAGRANGE2
+#SolidDisplacementTopology=meshes/FinalModel_quad
+#SolidPressureTopology=meshes/FinalModel_lin
+
+#NeoHookeanParameter=35.7
+
+!SetOutputPath={../../results/reference/cheart/}
+
+%  ---  Solver Groups & Matrices  --------------------------------------------
+!DefSolverGroup={Deformation|null|SolidMatrix}
+ !DefSolverSubGroup={Deformation|seq_fp|SolidMatrix|ScaleFirstResidual[100]}
+ !SetSolverGroup={Deformation|ITERATION|12}
+ !SetSolverGroup={Deformation|SUBITERATION|6}
+ !SetSolverGroup={Deformation|L2TOL|1e-10}
+
+!DefSolverMatrix={SolidMatrix|SOLVER_MUMPS|Solid}
+ !SetSolverMatrix={SolidMatrix|Ordering|serial}
+ !SetSolverMatrix={SolidMatrix|MemoryBuffer|200}
+
+%  ---  Basis function Definitions  --------------------------------------------
+!UseBasis={SPresBasis |#SolidElement|#SolidPressure|GAUSS_LEGENDRE9}
+!UseBasis={SVelBasis  |#SolidElement|#SolidDisplacement|GAUSS_LEGENDRE9}
+
+%  ---  Topology Definitions  --------------------------------------------
+!DefTopology={SolidVelTP |#SolidDisplacementTopology|SVelBasis}
+!DefTopology={SolidPresTP|#SolidPressureTopology|SPresBasis}
+
+%  ---  Interface Definitions  --------------------------------------------
+!DefInterface={OneToOne|SolidVelTP|SolidPresTP}
+
+%  ---  Variable Pointer Definitions  --------------------------------------------
+!DefVariablePointer={SolidSpace |SolidVelTP |#SolidDisplacementTopology|3}
+!DefVariablePointer={Disp       |SolidVelTP |3}
+!DefVariablePointer={SolidPres  |SolidPresTP|1}
+
+!SetExportFrequency={Disp|SolidPres|SolidSpace|1}
+
+%  ---  Solid Problem Definition  --------------------------------------------
+!DefProblem={Solid|STEADY_QUASI_STATIC_ELASTICITY}
+  !UseVariablePointer={Space|SolidSpace}
+  !UseVariablePointer={Displacement|Disp}
+  !UseVariablePointer={Pressure|SolidPres}
+  !ConstitutiveLaw={neohookean|#NeoHookeanParameter}
+  !SetRootTopology={SolidVelTP}
+  !SetProblemMatrixCalculation={EVALUATE_EVERY_BUILD}
+  !SetProblemTimeDiscretization={time_scheme_backward_euler}
+  !SetProblemResidualCalculation={EVALUATE_EVERY_ITERATION}
+  !Patch-labels={3}
+    Top       NODE  meshes/top.nodes
+    Bottom    NODE  meshes/bottom.nodes
+    Side      NODE  meshes/side.nodes
+  !Boundary-patch-definitions
+    Top       Disp  Dirichlet   2.0 2.0 2.0
+    Bottom    Disp  Dirichlet   0.0 0.0 0.0
+
