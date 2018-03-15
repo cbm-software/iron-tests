@@ -34,7 +34,7 @@ for s in np.arange(0, 2, 1):
     # for Jacobian type
     for i in np.arange(0, 2, 1):
         # for BC type
-        for r in np.arange(0, 3, 1):
+        for r in np.arange(0, 1, 1):
             NumberOfTests += 1
             ####################################################################
             # read reference data
@@ -277,6 +277,10 @@ for s in np.arange(0, 2, 1):
                 print status
                 failedtests_file.write(status+"\n")
                 NumberOfFailedTests += 1
+            else:
+                status = filename+"       | CHeart   - Iron |_2 = "+str(l2diff_ci) \
+                    +"       | Iron_ref - Iron |_2 = "+str(l2diff_i0i)+"   TEST PASSED"
+                print status
 if (NumberOfFailedTests == 0):
     failedtests_file.write("No failed tests.\n")
 failedtests_file.close()

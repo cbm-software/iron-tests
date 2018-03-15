@@ -49,7 +49,8 @@ gfx modify window 1 set transform_tool current_pane 1 std_view_angle 40 normal_l
 # open scene editor
 gfx edit scene
 
-gfx print postscript file ../../../doc/figures/undeformed_geometry.eps
+#gfx print postscript file ../../../doc/figures/undeformed_geometry.eps
+gfx print postscript file ../../../doc/figures/current_run-undeformed_geometry.eps
 
 ############## plot displacement components, magnitude and pressure
 # first remove undeformed domain
@@ -60,33 +61,38 @@ gfx modify g_element "/" surfaces coordinate DeformedGeometry tessellation defau
 gfx modify spectrum pressure_spectrum autorange
 gfx create colour_bar spectrum pressure_spectrum label_material black
 gfx modify g_element "/" point coordinate DeformedGeometry NORMALISED_WINDOW_FIT_LEFT glyph colour_bar general size "1*1*1" centre 0,0,0 font default select_on material black selected_material copper
-gfx print postscript file ../../../doc/figures/deformed_geometry-pressure.eps
+#gfx print postscript file ../../../doc/figures/deformed_geometry-pressure.eps
+gfx print postscript file ../../../doc/figures/current_run-deformed_geometry-pressure.eps
 
 # DisplacementM on deformed domain
 gfx modify g_element "/" surfaces coordinate DeformedGeometry tessellation default LOCAL select_on material tissue data DisplacementM spectrum displacementm_spectrum selected_material default_selected render_shaded
 gfx modify spectrum displacementm_spectrum autorange
 gfx create colour_bar spectrum displacementm_spectrum label_material black
 gfx modify g_element "/" point coordinate DeformedGeometry NORMALISED_WINDOW_FIT_LEFT glyph colour_bar general size "1*1*1" centre 0,0,0 font default select_on material black selected_material copper
-gfx print postscript file ../../../doc/figures/deformed_geometry-displacementM.eps
+#gfx print postscript file ../../../doc/figures/deformed_geometry-displacementM.eps
+gfx print postscript file ../../../doc/figures/current_run-deformed_geometry-displacementM.eps
 
 # DisplacementX on deformed domain
 gfx modify g_element "/" surfaces coordinate DeformedGeometry tessellation default LOCAL select_on material tissue data DisplacementX spectrum displacementx_spectrum selected_material default_selected render_shaded
 gfx modify spectrum displacementx_spectrum autorange
 gfx create colour_bar spectrum displacementx_spectrum label_material black
 gfx modify g_element "/" point coordinate DeformedGeometry NORMALISED_WINDOW_FIT_LEFT glyph colour_bar general size "1*1*1" centre 0,0,0 font default select_on material black selected_material copper
-gfx print postscript file ../../../doc/figures/deformed_geometry-displacementX.eps
+#gfx print postscript file ../../../doc/figures/deformed_geometry-displacementX.eps
+gfx print postscript file ../../../doc/figures/current_run-deformed_geometry-displacementX.eps
 
 # DisplacementY on deformed domain
 gfx modify g_element "/" surfaces coordinate DeformedGeometry tessellation default LOCAL select_on material tissue data DisplacementY spectrum displacementy_spectrum selected_material default_selected render_shaded
 gfx modify spectrum displacementy_spectrum autorange
 gfx create colour_bar spectrum displacementy_spectrum label_material black
 gfx modify g_element "/" point coordinate DeformedGeometry NORMALISED_WINDOW_FIT_LEFT glyph colour_bar general size "1*1*1" centre 0,0,0 font default select_on material black selected_material copper
-gfx print postscript file ../../../doc/figures/deformed_geometry-displacementY.eps
+#gfx print postscript file ../../../doc/figures/deformed_geometry-displacementY.eps
+gfx print postscript file ../../../doc/figures/current_run-deformed_geometry-displacementY.eps
 
 # DisplacementZ on deformed domain
 gfx modify g_element "/" surfaces coordinate DeformedGeometry tessellation default LOCAL select_on material tissue data DisplacementZ spectrum displacementz_spectrum selected_material default_selected render_shaded
 gfx modify spectrum displacementz_spectrum autorange
 gfx create colour_bar spectrum displacementz_spectrum label_material black
 gfx modify g_element "/" point coordinate DeformedGeometry NORMALISED_WINDOW_FIT_LEFT glyph colour_bar general size "1*1*1" centre 0,0,0 font default select_on material black selected_material copper
-gfx print postscript file ../../../doc/figures/deformed_geometry-displacementZ.eps
+#gfx print postscript file ../../../doc/figures/deformed_geometry-displacementZ.eps
+gfx print postscript file ../../../doc/figures/current_run-deformed_geometry-displacementZ.eps
 

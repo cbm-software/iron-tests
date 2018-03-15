@@ -7,15 +7,7 @@ echo "running example $(pwd)"
 # direct solver
 ./bin/example ./src/cheart/meshes/FinalModel_quad_FE 1 1 17.85 0.0 2.0 1 0
 ./bin/example ./src/cheart/meshes/FinalModel_quad_FE 1 0 17.85 0.0 2.0 1 0
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 1 1 17.85 0.0 2.0 1 1
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 1 0 17.85 0.0 2.0 1 1
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 1 1 17.85 0.0 2.0 1 2
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 1 0 17.85 0.0 2.0 1 2
 
 # iterative solver
 ./bin/example ./src/cheart/meshes/FinalModel_quad_FE 0 1 17.85 0.0 2.0 1 0
 ./bin/example ./src/cheart/meshes/FinalModel_quad_FE 0 0 17.85 0.0 2.0 1 0
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 0 1 17.85 0.0 2.0 1 1
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 0 0 17.85 0.0 2.0 1 1
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 0 1 17.85 0.0 2.0 1 2
-./bin/example ./src/cheart/meshes/FinalModel_quad_FE 0 0 17.85 0.0 2.0 1 2

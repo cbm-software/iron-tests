@@ -204,7 +204,7 @@ PROGRAM FORTRANEXAMPLE
 
   ! CLI
   NumberOfArguments = COMMAND_ARGUMENT_COUNT()
-  IF(NumberOfArguments >= 14) THEN
+  IF(NumberOfArguments == 14) THEN
     ! get extents of spatial domain
     CALL GET_COMMAND_ARGUMENT(1,CommandArgument,ArgumentLength,ArgumentStatus)
     IF(ArgumentStatus>0) CALL HandleError("Error for command argument 1.")
@@ -273,21 +273,22 @@ PROGRAM FORTRANEXAMPLE
     IF((bcType<0).OR.(bcType>2)) CALL HandleError("Invalid BC type.")
     WRITE(*,*) "!=============================================================="
     WRITE(*,*) "User arguments:"
-    WRITE(*,*) "  Width                 = ",Width
-    WRITE(*,*) "  Height                = ",Height
-    WRITE(*,*) "  Length                = ",Length
-    WRITE(*,*) "  NumberGlobalXElements = ",NumberGlobalXElements
-    WRITE(*,*) "  NumberGlobalYElements = ",NumberGlobalYElements
-    WRITE(*,*) "  NumberGlobalZElements = ",NumberGlobalZElements
-    WRITE(*,*) "  SolverIsDirect        = ",SolverIsDirect
-    WRITE(*,*) "  JACOBIAN_FD           = ",JACOBIAN_FD
-    WRITE(*,*) "  MooneyRivlin1         = ",MooneyRivlin1
-    WRITE(*,*) "  MooneyRivlin2         = ",MooneyRivlin2
-    WRITE(*,*) "  useGeneratedMesh      = ",useGeneratedMesh
-    WRITE(*,*) "  BCDISP_MAX            = ",BCDISP_MAX
-    WRITE(*,*) "  bcType                = ",bcType
+    WRITE(*,*) "  Width                   = ",Width
+    WRITE(*,*) "  Height                  = ",Height
+    WRITE(*,*) "  Length                  = ",Length
+    WRITE(*,*) "  NumberGlobalXElements   = ",NumberGlobalXElements
+    WRITE(*,*) "  NumberGlobalYElements   = ",NumberGlobalYElements
+    WRITE(*,*) "  NumberGlobalZElements   = ",NumberGlobalZElements
+    WRITE(*,*) "  SolverIsDirect          = ",SolverIsDirect
+    WRITE(*,*) "  JACOBIAN_FD             = ",JACOBIAN_FD
+    WRITE(*,*) "  MooneyRivlin1           = ",MooneyRivlin1
+    WRITE(*,*) "  MooneyRivlin2           = ",MooneyRivlin2
+    WRITE(*,*) "  useGeneratedMesh        = ",useGeneratedMesh
+    WRITE(*,*) "  BCDISP_MAX              = ",BCDISP_MAX
+    WRITE(*,*) "  NumberOfLoadIncrements  = ",NumberOfLoadIncrements
+    WRITE(*,*) "  bcType                  = ",bcType
     WRITE(*,*) "!=============================================================="
-  ELSE
+  ELSE IF (NumberOfArguments == 0) THEN
     ! defaults for input arguments
     Width                         = 1.0_CMISSRP
     Height                        = 0.2_CMISSRP
@@ -305,20 +306,23 @@ PROGRAM FORTRANEXAMPLE
     bcType                        = 0 ! 0 - Dirichlet BC by default; else: 1 - Neumann_integrated, 2 - Neumann_point
     WRITE(*,*) "!=============================================================="
     WRITE(*,*) "Default arguments:"
-    WRITE(*,*) "  Width                 = ",Width
-    WRITE(*,*) "  Height                = ",Height
-    WRITE(*,*) "  Length                = ",Length
-    WRITE(*,*) "  NumberGlobalXElements = ",NumberGlobalXElements
-    WRITE(*,*) "  NumberGlobalYElements = ",NumberGlobalYElements
-    WRITE(*,*) "  NumberGlobalZElements = ",NumberGlobalZElements
-    WRITE(*,*) "  SolverIsDirect        = ",SolverIsDirect
-    WRITE(*,*) "  JACOBIAN_FD           = ",JACOBIAN_FD
-    WRITE(*,*) "  MooneyRivlin1         = ",MooneyRivlin1
-    WRITE(*,*) "  MooneyRivlin2         = ",MooneyRivlin2
-    WRITE(*,*) "  useGeneratedMesh      = ",useGeneratedMesh
-    WRITE(*,*) "  BCDISP_MAX            = ",BCDISP_MAX
-    WRITE(*,*) "  bcType                = ",bcType
+    WRITE(*,*) "  Width                   = ",Width
+    WRITE(*,*) "  Height                  = ",Height
+    WRITE(*,*) "  Length                  = ",Length
+    WRITE(*,*) "  NumberGlobalXElements   = ",NumberGlobalXElements
+    WRITE(*,*) "  NumberGlobalYElements   = ",NumberGlobalYElements
+    WRITE(*,*) "  NumberGlobalZElements   = ",NumberGlobalZElements
+    WRITE(*,*) "  SolverIsDirect          = ",SolverIsDirect
+    WRITE(*,*) "  JACOBIAN_FD             = ",JACOBIAN_FD
+    WRITE(*,*) "  MooneyRivlin1           = ",MooneyRivlin1
+    WRITE(*,*) "  MooneyRivlin2           = ",MooneyRivlin2
+    WRITE(*,*) "  useGeneratedMesh        = ",useGeneratedMesh
+    WRITE(*,*) "  BCDISP_MAX              = ",BCDISP_MAX
+    WRITE(*,*) "  NumberOfLoadIncrements  = ",NumberOfLoadIncrements
+    WRITE(*,*) "  bcType                  = ",bcType
     WRITE(*,*) "!=============================================================="
+  ELSE
+    CALL HandleError("Invalid number of arguments.")
   END IF
   IF(NumberGlobalZElements >= 1) THEN
     NumberOfDimensions  = 3

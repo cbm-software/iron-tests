@@ -189,47 +189,58 @@ PROGRAM FORTRANEXAMPLE
   IF(NumberOfArguments == 8) THEN
     ! get mesh file name
     CALL GET_COMMAND_ARGUMENT(1,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 1.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 1.")
     Filename = TRIM(CommandArgument(1:ArgumentLength))
     ! solver type (0: direct linear solve,1: linear iterative solve)
     CALL GET_COMMAND_ARGUMENT(2,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 2.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 2.")
     READ(CommandArgument(1:ArgumentLength),*) SolverIsDirect
-    IF((SolverIsDirect<0).OR.(SolverIsDirect>1)) CALL HANDLE_ERROR("Invalid solver type.")
+    IF((SolverIsDirect<0).OR.(SolverIsDirect>1)) CALL HandleError("Invalid solver type.")
     ! Jacobian type (0: analytical Jacobian, 1: finite difference Jacobian)
     CALL GET_COMMAND_ARGUMENT(3,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 3.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 3.")
     READ(CommandArgument(1:ArgumentLength),*) JACOBIAN_FD
-    IF((JACOBIAN_FD<0).OR.(JACOBIAN_FD>1)) CALL HANDLE_ERROR("Invalid Jacobian type.")
+    IF((JACOBIAN_FD<0).OR.(JACOBIAN_FD>1)) CALL HandleError("Invalid Jacobian type.")
     ! Material Parameter -> Mooney-Rivlin parameter 1
     CALL GET_COMMAND_ARGUMENT(4,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 4.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 4.")
     READ(CommandArgument(1:ArgumentLength),*) MooneyRivlin1
-    IF(MooneyRivlin1<=0) CALL HANDLE_ERROR("Invalid Mooney-Rivlin specification.")
+    IF(MooneyRivlin1<=0) CALL HandleError("Invalid Mooney-Rivlin specification.")
     ! Material Parameter -> Mooney-Rivlin parameter 2
     CALL GET_COMMAND_ARGUMENT(5,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 5.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 5.")
     READ(CommandArgument(1:ArgumentLength),*) MooneyRivlin2
-    IF(MooneyRivlin2<0) CALL HANDLE_ERROR("Invalid MooneyRivlin specification.")
+    IF(MooneyRivlin2<0) CALL HandleError("Invalid MooneyRivlin specification.")
     ! BC -> maximum absolute isplacement
     CALL GET_COMMAND_ARGUMENT(6,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 6.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 6.")
     READ(CommandArgument(1:ArgumentLength),*) BCDISP_MAX
-    IF(BCDISP_MAX<=-1.0) CALL HANDLE_ERROR("Invalid BC specification.")
+    IF(BCDISP_MAX<=-1.0) CALL HandleError("Invalid BC specification.")
     ! apply BC with load increments
     CALL GET_COMMAND_ARGUMENT(7,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 7.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 7.")
     READ(CommandArgument(1:ArgumentLength),*) NumberOfLoadIncrements
-    IF(NumberOfLoadIncrements<1) CALL HANDLE_ERROR("Invalid number of load increments.")
+    IF(NumberOfLoadIncrements<1) CALL HandleError("Invalid number of load increments.")
     ! Do boundary condition as Dirichlet?
     CALL GET_COMMAND_ARGUMENT(8,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 8.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 8.")
     READ(CommandArgument(1:ArgumentLength),*) bcType
-    IF((bcType<0).OR.(bcType>2)) CALL HANDLE_ERROR("Invalid BC type.")
+    IF((bcType<0).OR.(bcType>2)) CALL HandleError("Invalid BC type.")
+    WRITE(*,*) "!=============================================================="
+    WRITE(*,*) "User arguments:"
+    WRITE(*,*) "  Filename                = ",TRIM(Filename)
+    WRITE(*,*) "  SolverIsDirect          = ",SolverIsDirect
+    WRITE(*,*) "  JACOBIAN_FD             = ",JACOBIAN_FD
+    WRITE(*,*) "  MooneyRivlin1           = ",MooneyRivlin1
+    WRITE(*,*) "  MooneyRivlin2           = ",MooneyRivlin2
+    WRITE(*,*) "  BCDISP_MAX              = ",BCDISP_MAX
+    WRITE(*,*) "  NumberOfLoadIncrements  = ",NumberOfLoadIncrements
+    WRITE(*,*) "  bcType                  = ",bcType
+    WRITE(*,*) "!=============================================================="
   ELSE IF (NumberOfArguments == 1) THEN
     ! get extents of spatial domain
     CALL GET_COMMAND_ARGUMENT(1,CommandArgument,ArgumentLength,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 1.")
+    IF(STATUS>0) CALL HandleError("Error for command argument 1.")
     Filename = TRIM(CommandArgument(1:ArgumentLength))
     ! defaults for input arguments
     SolverIsDirect                = 1 ! direct solver by default
@@ -239,8 +250,19 @@ PROGRAM FORTRANEXAMPLE
     BCDISP_MAX                    = 2.0_CMISSRP
     NumberOfLoadIncrements        = 1
     bcType                        = 0 ! 0 - Dirichlet BC by default; else: 1 - Neumann_integrated, 2 - Neumann_point
+    WRITE(*,*) "!=============================================================="
+    WRITE(*,*) "Default arguments:"
+    WRITE(*,*) "  Filename                = ",TRIM(Filename)
+    WRITE(*,*) "  SolverIsDirect          = ",SolverIsDirect
+    WRITE(*,*) "  JACOBIAN_FD             = ",JACOBIAN_FD
+    WRITE(*,*) "  MooneyRivlin1           = ",MooneyRivlin1
+    WRITE(*,*) "  MooneyRivlin2           = ",MooneyRivlin2
+    WRITE(*,*) "  BCDISP_MAX              = ",BCDISP_MAX
+    WRITE(*,*) "  NumberOfLoadIncrements  = ",NumberOfLoadIncrements
+    WRITE(*,*) "  bcType                  = ",bcType
+    WRITE(*,*) "!=============================================================="
   ELSE
-    CALL HANDLE_ERROR("Invalid number of arguments.")
+    CALL HandleError("Invalid number of arguments.")
   END IF
 
   ! get the number of computational nodes and this computational node number
@@ -287,15 +309,15 @@ PROGRAM FORTRANEXAMPLE
   INQUIRE(FILE=trim(Filename)//".X",EXIST=FileExists)
   IF(.NOT.FileExists) THEN
     WRITE(*,*) trim(Filename)//".X"
-    CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".X")
+    CALL HandleError("File does not exist: "//trim(Filename)//".X")
   END IF
   INQUIRE(FILE=trim(Filename)//".T",EXIST=FileExists)
   IF(.NOT.FileExists) THEN
-    CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".T")
+    CALL HandleError("File does not exist: "//trim(Filename)//".T")
   END IF
   INQUIRE(FILE=trim(Filename)//".S",EXIST=FileExists)
   IF(.NOT.FileExists) THEN
-    CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".S")
+    CALL HandleError("File does not exist: "//trim(Filename)//".S")
   END IF
   ! read CHeart mesh based on the given command line arguments
   WRITE(*,*) "Reading CHeart mesh data file "//TRIM(Filename)
@@ -494,8 +516,11 @@ PROGRAM FORTRANEXAMPLE
     CALL cmfe_Solver_LinearTypeSet(LinearSolver,CMFE_SOLVER_LINEAR_DIRECT_SOLVE_TYPE,Err)
   ELSE
     CALL cmfe_Solver_LinearTypeSet(LinearSolver,CMFE_SOLVER_LINEAR_ITERATIVE_SOLVE_TYPE,Err)
+    ! CMISS, PETSC, MUMPS, SUPERLU, SPOOLES, UMFPACK, LUSOL, ESSL, LAPACK, TAO, HYPRE, PASTIX
+    CALL cmfe_Solver_LibraryTypeSet(LinearSolver,CMFE_SOLVER_PETSC_LIBRARY,Err)
     ! options for preconditioner are: NO,JACOBI,BLOCK_JACOBI,SOR,INCOMPLETE_CHOLESKY,INCOMPLETE_LU,ADDITIVE_SCHWARZ
     CALL cmfe_Solver_LinearIterativePreconditionerTypeSet(LinearSolver,CMFE_SOLVER_ITERATIVE_BLOCK_JACOBI_PRECONDITIONER,Err)
+    CALL cmfe_Solver_LinearIterativeTypeSet(LinearSolver,CMFE_SOLVER_ITERATIVE_BICONJUGATE_GRADIENT,Err)
     CALL cmfe_Solver_LinearIterativeMaximumIterationsSet(LinearSolver,1000,Err)
     CALL cmfe_Solver_LinearIterativeAbsoluteToleranceSet(LinearSolver,1.0E-12_CMISSRP,Err)
     CALL cmfe_Solver_LinearIterativeRelativeToleranceSet(LinearSolver,1.0E-12_CMISSRP,Err)
@@ -560,23 +585,21 @@ PROGRAM FORTRANEXAMPLE
       IF(NodeDomain==ComputationalNodeNumber) THEN
         ! Dirichlet BC at x=lx
         CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-          & 1,CMFE_BOUNDARY_CONDITION_FIXED,BCDISP_MAX,Err)
+          & 1,CMFE_BOUNDARY_CONDITION_FIXED_INCREMENTED,BCDISP_MAX,Err)
         CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-          & 2,CMFE_BOUNDARY_CONDITION_FIXED,BCDISP_MAX,Err)
+          & 2,CMFE_BOUNDARY_CONDITION_FIXED_INCREMENTED,BCDISP_MAX,Err)
         CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-          & 3,CMFE_BOUNDARY_CONDITION_FIXED,BCDISP_MAX,Err)
+          & 3,CMFE_BOUNDARY_CONDITION_FIXED_INCREMENTED,BCDISP_MAX,Err)
       END IF
     END DO
   ! apply Neumann integrated BC
   ELSE IF((bcType==1).AND..FALSE.) THEN
     WRITE(*,*) "Applying traction BC.."
-    WRITE(*,*) "Warning: BC type 1 not fully implemented for user-defined mesh."
-    STOP
+    CALL HandleError("Warning: BC type 1 not fully implemented for user-defined mesh.")
   ! apply Neumann point BC
   ELSE IF(bcType==2) THEN
     WRITE(*,*) "Applying traction BC.."
-    WRITE(*,*) "Warning: BC type 2 not fully implemented for user-defined mesh."
-    STOP
+    CALL HandleError("Warning: BC type 2 not fully implemented for user-defined mesh.")
   END IF
 
   ! finish BC
@@ -595,19 +618,19 @@ PROGRAM FORTRANEXAMPLE
     ! make sure directories exist
     INQUIRE(file="./results/", exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir ./results/")
+      CALL execute_command_line("mkdir -p ./results/")
     END IF
     INQUIRE(file="./results/reference/", exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir ./results/reference/")
+      CALL execute_command_line("mkdir -p ./results/reference/")
     END IF
     INQUIRE(file="./results/reference/iron/", exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir ./results/reference/iron/")
+      CALL execute_command_line("mkdir -p ./results/reference/iron/")
     END IF
     INQUIRE(file=trim(Filename), exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir "//trim(Filename))
+      CALL execute_command_line("mkdir -p "//trim(Filename))
     END IF
   ELSE
     ! Set export file name
@@ -617,15 +640,15 @@ PROGRAM FORTRANEXAMPLE
     ! make sure directories exist
     INQUIRE(file="./results/", exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir ./results/")
+      CALL execute_command_line("mkdir -p ./results/")
     END IF
     INQUIRE(file="./results/current_run/", exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir ./results/current_run/")
+      CALL execute_command_line("mkdir -p ./results/current_run/")
     END IF
     INQUIRE(file=trim(Filename), exist=DirectoryExists)
     IF(.NOT.DirectoryExists) THEN
-      CALL execute_command_line("mkdir "//trim(Filename))
+      CALL execute_command_line("mkdir -p "//trim(Filename))
     END IF
   END IF
 
@@ -648,12 +671,13 @@ PROGRAM FORTRANEXAMPLE
 
 CONTAINS
 
-  SUBROUTINE HANDLE_ERROR(ERROR_STRING)
-    CHARACTER(LEN=*), INTENT(IN) :: ERROR_STRING
+  SUBROUTINE HandleError(ErrorString)
+    CHARACTER(LEN=*), INTENT(IN) :: ErrorString
 
-    WRITE(*,'(">>ERROR: ",A)') ERROR_STRING(1:LEN_TRIM(ERROR_STRING))
+    WRITE(*,'(">>ERROR: ",A)') ErrorString(1:LEN_TRIM(ErrorString))
     STOP
-  END SUBROUTINE HANDLE_ERROR
+
+  END SUBROUTINE HandleError
 
 END PROGRAM FORTRANEXAMPLE
 
