@@ -13,12 +13,13 @@ default:
 	make example-0102
 	make example-0111
 	make example-0112
+	make example-0201-u
+	make example-0204-u
 	make example-0302-u
 	make example-0401
 	make example-0402
 	make example-0404-c
 	make collect-results
-	make create-figures
 	make latexmk-once
 
 tex:
@@ -54,10 +55,10 @@ example-%:
 	&& make \
 	&& make install \
 	&& cd .. \
-	&& bash run_example.sh debug \
+	&& bash run_example.sh debug fast \
 	&& cd results \
 	&& rm -f failed.tests results.summary \
-	&& python compare_solutions.py | grep -iE "Passed tests:|Testing 2D|Testing 3D"
+	&& python compare_solutions.py
 
 clean:
 	rm -rf *aux doc/*aux *.bbl *.blg *.fdb_latexmk  *.fls *.lof *.log *.lot *.out *.toc

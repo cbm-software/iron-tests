@@ -3,13 +3,10 @@
 %
 \clearpage
 %
-\subsection{Example-0003 \texttt{[COMPILES]}}
+\subsection{Example-0003 \texttt{[VALIDATED]}}
 %
 Example uses generated regular meshes and solves a static problem, i.e., applies
 the boundary conditions in one step.\\[2ex]
-
-\noindent Issues: Not clear how to prescribe Neumann BC. Results seem weird.
-Reference results are set up.
 %
 %===============================================================================
 %
@@ -94,7 +91,8 @@ No material parameters to specify.
 %
 \subsubsection{Result summary}
 %
-We use CHeart rev.\ 6292 to produce numerical reference solutions.
+We use CHeart rev.\ 6411 to produce numerical reference solutions.
+Tolerance of $10^{-10}$ on the RMSE.
 %
 \verbatiminput{examples/example-0003/results/results.summary}
 \verbatiminput{examples/example-0003/results/failed.tests}
@@ -108,23 +106,9 @@ We use CHeart rev.\ 6292 to produce numerical reference solutions.
 %
 \begin{figure}[h!]
     \centering 
-    \includegraphics[width=0.9\columnwidth]{examples/example-0003/doc/figures/current_run_l2x1x0_n8x4x0_i1_s0.eps} 
-    \caption{2D results, current run w/ command line arguments [2.0 1.0 0.0 8 4 0 1 0].}
-    \label{example-0003-current-run-2D-fig}
-\end{figure}
-%
-\begin{figure}[h!]
-    \centering 
     \includegraphics[width=0.9\columnwidth]{examples/example-0003/doc/figures/iron_reference_3D.eps} 
-    \caption{3D results, iron reference w/ command line arguments [2.0 1.0 1.0 8 4 4 1 0].}
+    \caption{3D results, iron reference w/ command line arguments [2.0 1.0 1.0 8 4 4 2 1].}
     \label{example-0003-iron-3D-reference-fig}
-\end{figure}
-%
-\begin{figure}[h!]
-    \centering 
-    \includegraphics[width=0.9\columnwidth]{examples/example-0003/doc/figures/current_run_l2x1x1_n8x4x4_i1_s0.eps} 
-    \caption{3D results, current run w/ command line arguments [2.0 1.0 1.0 8 4 4 1 0].}
-    \label{example-0003-current-run-3D-fig}
 \end{figure}
 %
 %===============================================================================

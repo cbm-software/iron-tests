@@ -29,24 +29,24 @@ fi
 # Write out x-displacements into a Text-File (-> Gives a list as ASCII-File [1,last_node])
 #
 # 2d tests
-cp results/get_displacement_2d.pl results/current_run/iron/l160x120x000_n08x06x00_i1_s0/ && cd results/current_run/iron/l160x120x000_n08x06x00_i1_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n08x06x00_i1_s0_shear_force.txt &&
+cp results/get_displacement_2d.pl results/current_run/l160x120x000_n08x06x00_i1_s0/ && cd results/current_run/l160x120x000_n08x06x00_i1_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n08x06x00_i1_s0_shear_force.txt &&
 cd ../../../
-cp results/get_displacement_2d.pl results/current_run/iron/l160x120x000_n16x12x00_i1_s0/ && cd results/current_run/iron/l160x120x000_n16x12x00_i1_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n16x12x00_i1_s0_shear_force.txt &&
+cp results/get_displacement_2d.pl results/current_run/l160x120x000_n16x12x00_i1_s0/ && cd results/current_run/l160x120x000_n16x12x00_i1_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n16x12x00_i1_s0_shear_force.txt &&
 cd ../../../
-cp results/get_displacement_2d.pl results/current_run/iron/l160x120x000_n32x24x00_i1_s0/ && cd results/current_run/iron/l160x120x000_n32x24x00_i1_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n32x24x00_i1_s0_shear_force.txt &&
+cp results/get_displacement_2d.pl results/current_run/l160x120x000_n32x24x00_i1_s0/ && cd results/current_run/l160x120x000_n32x24x00_i1_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n32x24x00_i1_s0_shear_force.txt &&
 cd ../../../
-cp results/get_displacement_2d.pl results/current_run/iron/l160x120x000_n08x06x00_i2_s0/ && cd results/current_run/iron/l160x120x000_n08x06x00_i2_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n08x06x00_i2_s0_shear_force.txt &&
+cp results/get_displacement_2d.pl results/current_run/l160x120x000_n08x06x00_i2_s0/ && cd results/current_run/l160x120x000_n08x06x00_i2_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n08x06x00_i2_s0_shear_force.txt &&
 cd ../../../
-cp results/get_displacement_2d.pl results/current_run/iron/l160x120x000_n16x12x00_i2_s0/ && cd results/current_run/iron/l160x120x000_n16x12x00_i2_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n16x12x00_i2_s0_shear_force.txt &&
+cp results/get_displacement_2d.pl results/current_run/l160x120x000_n16x12x00_i2_s0/ && cd results/current_run/l160x120x000_n16x12x00_i2_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n16x12x00_i2_s0_shear_force.txt &&
 cd ../../../
-cp results/get_displacement_2d.pl results/current_run/iron/l160x120x000_n32x24x00_i2_s0/ && cd results/current_run/iron/l160x120x000_n32x24x00_i2_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n32x24x00_i2_s0_shear_force.txt &&
+cp results/get_displacement_2d.pl results/current_run/l160x120x000_n32x24x00_i2_s0/ && cd results/current_run/l160x120x000_n32x24x00_i2_s0/ && ./get_displacement_2d.pl && mv my_displacement_5.txt l160x120x000_n32x24x00_i2_s0_shear_force.txt &&
 cd ../../../
 # 3d tests
-cp results/get_displacement_3d.pl results/current_run/iron/l160x120x120_n08x06x06_i1_s0/ && cd results/current_run/iron/l160x120x120_n08x06x06_i1_s0/ && ./get_displacement_3d.pl && mv my_displacement_5.txt l160x120x120_n08x06x00_i1_s0_shear_force.txt &&
+cp results/get_displacement_3d.pl results/current_run/l160x120x120_n08x06x06_i1_s0/ && cd results/current_run/l160x120x120_n08x06x06_i1_s0/ && ./get_displacement_3d.pl && mv my_displacement_5.txt l160x120x120_n08x06x00_i1_s0_shear_force.txt &&
 cd ../../../
-cp results/get_displacement_3d.pl results/current_run/iron/l160x120x120_n16x12x12_i1_s0/ && cd results/current_run/iron/l160x120x120_n16x12x12_i1_s0/ && ./get_displacement_3d.pl && mv my_displacement_5.txt l160x120x120_n16x12x12_i1_s0_shear_force.txt &&
+cp results/get_displacement_3d.pl results/current_run/l160x120x120_n16x12x12_i1_s0/ && cd results/current_run/l160x120x120_n16x12x12_i1_s0/ && ./get_displacement_3d.pl && mv my_displacement_5.txt l160x120x120_n16x12x12_i1_s0_shear_force.txt &&
 cd ../../../
 if [ "$kind" == "big" ]; then
-    cp results/get_displacement_3d.pl results/current_run/iron/l160x120x120_n32x24x24_i1_s0/ && cd results/current_run/iron/l160x120x120_n32x24x24_i1_s0/ && ./get_displacement_3d.pl && mv my_displacement_5.txt l160x120x120_n32x24x24_i1_s0_shear_force.txt &&
+    cp results/get_displacement_3d.pl results/current_run/l160x120x120_n32x24x24_i1_s0/ && cd results/current_run/l160x120x120_n32x24x24_i1_s0/ && ./get_displacement_3d.pl && mv my_displacement_5.txt l160x120x120_n32x24x24_i1_s0_shear_force.txt &&
     cd ../../../
 fi

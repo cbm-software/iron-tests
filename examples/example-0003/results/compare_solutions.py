@@ -21,7 +21,7 @@ blocksize   = 5
 # tolerance used to match nodes between CHeart and iron
 tolx         = 1.0e-6
 # tolerance used to check numerical solution
-tolu         = 1.0e-9
+tolu         = 1.0e-10
 
 # number of elements in each coordinate direction for different refinement levels
 NumberOfElements = np.zeros((3,3), dtype=int)
@@ -134,9 +134,9 @@ for s in np.arange(0, 2, 1):
                 print "wrong total number of nodes"
                 sys.exit()
             ####################################################################
-            # compute difference
-            l2diff_ci   = np.linalg.norm(cvals-ivals, 2)
-            l2diff_i0i  = np.linalg.norm(ivals0-ivals, 2)
+            # compute difference, RMSE
+            l2diff_ci   = np.linalg.norm(cvals-ivals, 2) / np.sqrt(ivals.shape[0])
+            l2diff_i0i  = np.linalg.norm(ivals0-ivals, 2) / np.sqrt(ivals.shape[0])
             if ((l2diff_ci > tolu) and (l2diff_i0i > tolu)):
                 status = filename+"       | CHeart   - Iron |_2 = "+str(l2diff_ci) \
                     +"       | Iron_ref - Iron |_2 = "+str(l2diff_i0i)
@@ -167,7 +167,7 @@ blocksize   = 6
 # tolerance used to match nodes between CHeart and iron
 tolx         = 1.0e-6
 # tolerance used to check numerical solution
-tolu         = 1.0e-9
+tolu         = 1.0e-10
 
 # number of elements in each coordinate direction for different refinement levels
 NumberOfElements = np.zeros((3,3), dtype=int)
@@ -287,8 +287,8 @@ for s in np.arange(0, 2, 1):
                 sys.exit()
             ####################################################################
             # compute difference
-            l2diff_ci   = np.linalg.norm(cvals-ivals, 2)
-            l2diff_i0i  = np.linalg.norm(ivals0-ivals, 2)
+            l2diff_ci   = np.linalg.norm(cvals-ivals, 2) / np.sqrt(ivals.shape[0])
+            l2diff_i0i  = np.linalg.norm(ivals0-ivals, 2) / np.sqrt(ivals.shape[0])
             if ((l2diff_ci > tolu) and (l2diff_i0i > tolu)):
                 status = filename+"       | CHeart   - Iron |_2 = "+str(l2diff_ci) \
                     +"       | Iron_ref - Iron |_2 = "+str(l2diff_i0i)

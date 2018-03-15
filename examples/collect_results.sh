@@ -1,12 +1,4 @@
 here=$(pwd)
-# run compare target for every example
-for examplefolder in `ls -d example-*`
-do
-    cd $examplefolder/results
-    python compare_solutions.py
-    cd $here
-done
-pwd
 
 # collect 'failed.tests' and 'results.summary' files from each example
 rm -f ../failed.tests

@@ -4,7 +4,7 @@
     15.0*SpaceVariable.2
 
 !DefExpression{rightFunc}
-    25.0-18.0*SpaceVariable.2
+    23.0
 
 !DefSolverGroup={SolverGroup    |   null                |   SolverMatrix}
 !DefSolverSubGroup={SolverGroup |   SOLVER_SEQUENTIAL   |   SolverMatrix}

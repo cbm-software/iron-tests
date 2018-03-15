@@ -50,6 +50,7 @@ PROGRAM LAPLACEEXAMPLE
 
   USE OpenCMISS
   USE OpenCMISS_Iron
+  USE meshReader
 #ifndef NOMPIMOD
   USE MPI
 #endif
@@ -120,6 +121,7 @@ PROGRAM LAPLACEEXAMPLE
   INTEGER(CMISSIntg)                :: NodeIdx,NodeNumber,NodeDomain
   INTEGER(CMISSIntg),   ALLOCATABLE :: LeftSurfaceNodes(:)
   INTEGER(CMISSIntg),   ALLOCATABLE :: RightSurfaceNodes(:)
+  REAL(CMISSRP),        ALLOCATABLE :: nodalWeights(:)
   INTEGER(CMISSIntg)                :: LeftNormalXi,RightNormalXi
   REAL(CMISSRP)                     :: DirichletValue,NeumannValue,y
   INTEGER(CMISSIntg)                :: Err
@@ -383,7 +385,7 @@ PROGRAM LAPLACEEXAMPLE
     CALL cmfe_Solver_LinearTypeSet(Solver,CMFE_SOLVER_LINEAR_ITERATIVE_SOLVE_TYPE,Err)
     CALL cmfe_Solver_LinearIterativeAbsoluteToleranceSet(Solver,1.0E-12_CMISSRP,Err)
     CALL cmfe_Solver_LinearIterativeRelativeToleranceSet(Solver,1.0E-12_CMISSRP,Err)
-    CALL cmfe_Solver_LinearIterativeMaximumIterationsSet(Solver,100,Err)
+    CALL cmfe_Solver_LinearIterativeMaximumIterationsSet(Solver,1000,Err)
   ENDIF
   
   !Finish the creation of the problem solver
@@ -427,6 +429,10 @@ PROGRAM LAPLACEEXAMPLE
         & CMFE_BOUNDARY_CONDITION_FIXED,DirichletValue,Err)
     ENDIF
   ENDDO
+  ! compute consistent nodal weights
+  CALL GeneratedMesh_SurfaceWeightsGet(nodalWeights,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE, &
+    & NUMBER_GLOBAL_X_ELEMENTS,NUMBER_GLOBAL_Y_ELEMENTS,NUMBER_GLOBAL_Z_ELEMENTS, &
+    & INTERPOLATION_TYPE,Err)
   !Set the right surface nodes to linearly decrease in y from 25 to 7
   DO NodeIdx=1,SIZE(RightSurfaceNodes,1)
     NodeNumber=RightSurfaceNodes(NodeIdx)
@@ -434,10 +440,11 @@ PROGRAM LAPLACEEXAMPLE
     IF(NodeDomain==ComputationalNodeNumber) THEN
       CALL cmfe_Field_ParameterSetGetNode(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE,1, &
         & 1,1,NodeNumber,2,y,Err)
-      NeumannValue=25.0_CMISSRP-y/HEIGHT*18.0_CMISSRP
-      CALL cmfe_BoundaryConditions_SetNode( &
+      NeumannValue=23.0_CMISSRP * Height * nodalWeights(NodeIdx)
+      IF(Length>0.0_CMISSRP) NeumannValue = NeumannValue * Length
+      CALL cmfe_BoundaryConditions_AddNode( &
         & BoundaryConditions,DependentField,CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber,1, &
-        & CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannValue,Err)
+        & CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NeumannValue,Err)
     ENDIF
   ENDDO
   !Finish the creation of the equations set boundary conditions
@@ -461,6 +468,7 @@ PROGRAM LAPLACEEXAMPLE
   CALL cmfe_Fields_Finalise(Fields,Err)
   
   !Finialise CMISS
+  IF(ALLOCATED(nodalWeights))           DEALLOCATE(nodalWeights)
   CALL cmfe_Finalise(Err)
 
   WRITE(*,'(A)') "Program successfully completed."

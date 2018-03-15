@@ -116,6 +116,7 @@ PROGRAM FORTRANEXAMPLE
   INTEGER(CMISSIntg)                    :: ComputationalNodeNumber
   INTEGER(CMISSIntg)                    :: NodeNumber
   INTEGER(CMISSIntg)                    :: NodeDomain
+  INTEGER(CMISSIntg)                    :: NodeIdx0
   INTEGER(CMISSIntg)                    :: NodeIdx
   INTEGER(CMISSIntg)                    :: ComponentIdx
   INTEGER(CMISSIntg)                    :: NumberOfNodes
@@ -619,7 +620,7 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_ControlLoop_Initialise(ControlLoop,Err)
   CALL cmfe_Problem_ControlLoopGet(Problem,CMFE_CONTROL_LOOP_NODE,ControlLoop,Err)
   CALL cmfe_ControlLoop_MaximumIterationsSet(ControlLoop,NumberOfLoadIncrements,Err)
-  CALL cmfe_ControlLoop_OutputTypeSet(CMFE_CONTROL_LOOP_PROGRESS_OUTPUT,Err)
+  CALL cmfe_ControlLoop_OutputTypeSet(ControlLoop,CMFE_CONTROL_LOOP_PROGRESS_OUTPUT,Err)
   CALL cmfe_Problem_ControlLoopCreateFinish(Problem,Err)
 
   !Create the problem solvers
@@ -810,7 +811,7 @@ PROGRAM FORTRANEXAMPLE
     ! apply Neumann integrated BC
     ELSE IF(bcType==1) THEN
       WRITE(*,*) "Applying traction BC.."
-      NodeIdx  = 1
+      NodeIdx0  = 1
       ! corresponding traction value
       NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * Height * Length
       WRITE(*,*) "  getting nodal weights"
@@ -823,13 +824,13 @@ PROGRAM FORTRANEXAMPLE
         IF(NodeDomain==ComputationalNodeNumber) THEN
           ! apply consistent nodal forces based on nodal weights
           ! Neumann BC at x=lx
-          NodalForce=NeumannBCvalue*nodalWeights(NodeIdx)/(NumberGlobalYElements*NumberGlobalZElements)
+          NodalForce=NeumannBCvalue*nodalWeights(NodeIdx0)/(NumberGlobalYElements*NumberGlobalZElements)
           CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
         END IF
-        NodeIdx  = NodeIdx + 1
-        IF(NodeIdx>9) NodeIdx = 1
+        NodeIdx0  = NodeIdx0 + 1
+        IF(NodeIdx0>9) NodeIdx0 = 1
       END DO
     ! apply Neumann point BC
     ELSE IF(bcType==2) THEN
