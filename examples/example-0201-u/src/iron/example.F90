@@ -60,63 +60,74 @@ PROGRAM FORTRANEXAMPLE
 #endif
 
 
-  !Test program parameters
-  REAL(CMISSRP) :: Width
-  REAL(CMISSRP) :: Length
-  REAL(CMISSRP) :: Height
-  REAL(CMISSRP) :: MooneyRivlin1,MooneyRivlin2
+  ! test program parameters
+  REAL(CMISSRP)                         :: Width
+  REAL(CMISSRP)                         :: Length
+  REAL(CMISSRP)                         :: Height
+  REAL(CMISSRP)                         :: MooneyRivlin1
+  REAL(CMISSRP)                         :: MooneyRivlin2
   ! for Neo-Hookean solid, set MooneyRivlin2==0 and MooneyRivlin1 consistent
   ! with the 1st Piola-Kirchhoff stress tensor:
   ! P = 2.0 * MooneyRivlin1 / (det F)^(2/NumberOfDimensions) * (F - (F : F) / NumberOfDimensions * F^{-T}) + pressure * F^{-T}
-  REAL(CMISSRP) :: BCDISP_MAX,NeumannBCvalue,lambda,areaChange,GaussXi,NodalForce
-  INTEGER(CMISSIntg) :: DisplacementInterpolationType
-  INTEGER(CMISSIntg) :: PressureInterpolationType
-  INTEGER(CMISSIntg) :: PressureMeshComponent
-  INTEGER(CMISSIntg) :: NumberOfGaussXi
-  INTEGER(CMISSIntg) :: NumberOfDimensions
-  INTEGER(CMISSIntg) :: ScalingType,GaussPoint
-  INTEGER(CMISSIntg) :: SolverIsDirect,JACOBIAN_FD
-  REAL(CMISSRP), PARAMETER :: Density=0.0E-4_CMISSRP !in g mm^-3
-  REAL(CMISSRP), PARAMETER :: Gravity(3)=[0.0_CMISSRP,0.0_CMISSRP,0.0_CMISSRP] !in m s^-2
-  INTEGER(CMISSIntg) :: NumberOfLoadIncrements=1
-  INTEGER(CMISSIntg) :: useGeneratedMesh,bcType
-  INTEGER(CMISSIntg), ALLOCATABLE :: nodeNumbers(:)
-  REAL(CMISSRP),      ALLOCATABLE :: nodalWeights(:)
+  REAL(CMISSRP)                         :: BCDISP_MAX
+  REAL(CMISSRP)                         :: NeumannBCvalue
+  REAL(CMISSRP)                         :: lambda
+  REAL(CMISSRP)                         :: NodalForce
+  INTEGER(CMISSIntg)                    :: DisplacementInterpolationType
+  INTEGER(CMISSIntg)                    :: PressureInterpolationType
+  INTEGER(CMISSIntg)                    :: PressureMeshComponent
+  INTEGER(CMISSIntg)                    :: NumberOfGaussXi
+  INTEGER(CMISSIntg)                    :: NumberOfDimensions
+  INTEGER(CMISSIntg)                    :: ScalingType
+  INTEGER(CMISSIntg)                    :: SolverIsDirect
+  INTEGER(CMISSIntg)                    :: JACOBIAN_FD
+  REAL(CMISSRP),      PARAMETER         :: Density                        = 0.0E-4_CMISSRP !in g mm^-3
+  REAL(CMISSRP),      PARAMETER         :: Gravity(3)                     = [0.0_CMISSRP,0.0_CMISSRP,0.0_CMISSRP] !in m s^-2
+  INTEGER(CMISSIntg)                    :: NumberOfLoadIncrements
+  INTEGER(CMISSIntg)                    :: useGeneratedMesh
+  INTEGER(CMISSIntg)                    :: bcType
+  INTEGER(CMISSIntg), ALLOCATABLE       :: nodeNumbers(:)
+  REAL(CMISSRP),      ALLOCATABLE       :: nodalWeights(:)
 
-  INTEGER(CMISSIntg), PARAMETER :: CoordinateSystemUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: RegionUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: DisplacementBasisUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: PressureBasisUserNumber=2
-  INTEGER(CMISSIntg), PARAMETER :: GeneratedMeshUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: MeshUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: DecompositionUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: FieldGeometryUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: FieldFibreUserNumber=2
-  INTEGER(CMISSIntg), PARAMETER :: FieldMaterialUserNumber=3
-  INTEGER(CMISSIntg), PARAMETER :: FieldDependentUserNumber=4
-  INTEGER(CMISSIntg), PARAMETER :: FieldSourceUserNumber=5
-  INTEGER(CMISSIntg), PARAMETER :: EquationsSetFieldUserNumber=6
-  INTEGER(CMISSIntg), PARAMETER :: EquationSetUserNumber=1
-  INTEGER(CMISSIntg), PARAMETER :: ProblemUserNumber=1
+  ! user numbers
+  INTEGER(CMISSIntg), PARAMETER         :: CoordinateSystemUserNumber     = 1
+  INTEGER(CMISSIntg), PARAMETER         :: RegionUserNumber               = 1
+  INTEGER(CMISSIntg), PARAMETER         :: DisplacementBasisUserNumber    = 1
+  INTEGER(CMISSIntg), PARAMETER         :: PressureBasisUserNumber        = 2
+  INTEGER(CMISSIntg), PARAMETER         :: GeneratedMeshUserNumber        = 1
+  INTEGER(CMISSIntg), PARAMETER         :: MeshUserNumber                 = 1
+  INTEGER(CMISSIntg), PARAMETER         :: DecompositionUserNumber        = 1
+  INTEGER(CMISSIntg), PARAMETER         :: FieldGeometryUserNumber        = 1
+  INTEGER(CMISSIntg), PARAMETER         :: FieldFibreUserNumber           = 2
+  INTEGER(CMISSIntg), PARAMETER         :: FieldMaterialUserNumber        = 3
+  INTEGER(CMISSIntg), PARAMETER         :: FieldDependentUserNumber       = 4
+  INTEGER(CMISSIntg), PARAMETER         :: FieldSourceUserNumber          = 5
+  INTEGER(CMISSIntg), PARAMETER         :: EquationsSetFieldUserNumber    = 6
+  INTEGER(CMISSIntg), PARAMETER         :: EquationSetUserNumber          = 1
+  INTEGER(CMISSIntg), PARAMETER         :: ProblemUserNumber              = 1
 
-  !Program variables
-  INTEGER(CMISSIntg) :: NumberGlobalXElements,NumberGlobalYElements,NumberGlobalZElements
-  INTEGER(CMISSIntg) :: NUMBER_OF_ARGUMENTS,ARGUMENT_LENGTH,STATUS
-  CHARACTER(LEN=255) :: COMMAND_ARGUMENT
-  INTEGER(CMISSIntg) :: EquationsSetIndex
-  INTEGER(CMISSIntg) :: NumberOfComputationalNodes,NumberOfDomains,ComputationalNodeNumber
-  INTEGER(CMISSIntg) :: NodeNumber,NodeDomain,node_idx,node_idx_2,component_idx,deriv_idx,NumberOfNodes
-  INTEGER(CMISSIntg),ALLOCATABLE :: LeftSurfaceNodes(:),RightSurfaceNodes(:)
-  INTEGER(CMISSIntg) :: LeftNormalXi,RightNormalXi
-  INTEGER(CMISSIntg) :: NumberOfArguments,ArgumentLength,ArgStatus
-  CHARACTER(LEN=255) :: CommandArgument,filename
-
-
-  ! consistent nodal forces stuff
-  INTEGER(CMISSIntg)  :: numNodesX,numNodesY,numNodesZ,numNodesXY,numNodesXZ,numNodesYZ
-  REAL(CMISSRP)       :: weight
-
-
+  ! program variables
+  INTEGER(CMISSIntg)                    :: NumberGlobalXElements
+  INTEGER(CMISSIntg)                    :: NumberGlobalYElements
+  INTEGER(CMISSIntg)                    :: NumberGlobalZElements
+  INTEGER(CMISSIntg)                    :: EquationsSetIndex
+  INTEGER(CMISSIntg)                    :: NumberOfComputationalNodes
+  INTEGER(CMISSIntg)                    :: NumberOfDomains
+  INTEGER(CMISSIntg)                    :: ComputationalNodeNumber
+  INTEGER(CMISSIntg)                    :: NodeNumber
+  INTEGER(CMISSIntg)                    :: NodeDomain
+  INTEGER(CMISSIntg)                    :: NodeIdx
+  INTEGER(CMISSIntg)                    :: ComponentIdx
+  INTEGER(CMISSIntg)                    :: NumberOfNodes
+  INTEGER(CMISSIntg), ALLOCATABLE       :: LeftSurfaceNodes(:)
+  INTEGER(CMISSIntg), ALLOCATABLE       :: RightSurfaceNodes(:)
+  INTEGER(CMISSIntg)                    :: LeftNormalXi
+  INTEGER(CMISSIntg)                    :: RightNormalXi
+  INTEGER(CMISSIntg)                    :: NumberOfArguments
+  INTEGER(CMISSIntg)                    :: ArgumentLength
+  INTEGER(CMISSIntg)                    :: ArgumentStatus
+  CHARACTER(LEN=255)                    :: CommandArgument
+  CHARACTER(LEN=255)                    :: Filename
 
   ! CMISS variables
   TYPE(cmfe_BasisType)                  :: DisplacementBasis
@@ -158,8 +169,13 @@ PROGRAM FORTRANEXAMPLE
   INTEGER(CMISSIntg)                    :: NumberOfElements
   INTEGER(CMISSIntg)                    :: NumberOfNodesPerElement
   INTEGER(CMISSIntg)                    :: NumberOfBoundaryPatches
-  INTEGER(CMISSIntg)                    :: ElementIdx,NodeIdx,ComponentIdx,CurrentPatchID,StartIdx,StopIdx
-  REAL(CMISSRP)                         :: x,y,z
+  INTEGER(CMISSIntg)                    :: ElementIdx
+  INTEGER(CMISSIntg)                    :: CurrentPatchID
+  INTEGER(CMISSIntg)                    :: StartIdx
+  INTEGER(CMISSIntg)                    :: StopIdx
+  REAL(CMISSRP)                         :: x
+  REAL(CMISSRP)                         :: y
+  REAL(CMISSRP)                         :: z
 
 #ifdef WIN32
   !Quickwin type
@@ -181,77 +197,101 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_OutputSetOn("Example",Err)
 
   DisplacementInterpolationType = CMFE_BASIS_QUADRATIC_LAGRANGE_INTERPOLATION
+  PressureInterpolationType     = CMFE_BASIS_LINEAR_LAGRANGE_INTERPOLATION
+  PressureMeshComponent         = 2
   ScalingType                   = CMFE_FIELD_ARITHMETIC_MEAN_SCALING
+  NumberOfGaussXi               = 3
 
-!!!!!!!! Command Line Interface !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  NUMBER_OF_ARGUMENTS = COMMAND_ARGUMENT_COUNT()
-  IF(NUMBER_OF_ARGUMENTS >= 13) THEN
+  ! CLI
+  NumberOfArguments = COMMAND_ARGUMENT_COUNT()
+  IF(NumberOfArguments >= 14) THEN
     ! get extents of spatial domain
-    CALL GET_COMMAND_ARGUMENT(1,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 1.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) WIDTH
-    IF(WIDTH<=0) CALL HANDLE_ERROR("Invalid width.")
-    CALL GET_COMMAND_ARGUMENT(2,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 2.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) HEIGHT
-    IF(HEIGHT<=0) CALL HANDLE_ERROR("Invalid height.")
-    CALL GET_COMMAND_ARGUMENT(3,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 3.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) LENGTH
-    IF(LENGTH<0) CALL HANDLE_ERROR("Invalid length.")
+    CALL GET_COMMAND_ARGUMENT(1,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 1.")
+    READ(CommandArgument(1:ArgumentLength),*) Width
+    IF(Width<=0) CALL HandleError("Invalid width.")
+    CALL GET_COMMAND_ARGUMENT(2,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 2.")
+    READ(CommandArgument(1:ArgumentLength),*) Height
+    IF(Height<=0) CALL HandleError("Invalid height.")
+    CALL GET_COMMAND_ARGUMENT(3,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 3.")
+    READ(CommandArgument(1:ArgumentLength),*) Length
+    IF(Length<0) CALL HandleError("Invalid length.")
     ! number of elements in each coordinate direction
-    CALL GET_COMMAND_ARGUMENT(4,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 4.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) NumberGlobalXElements
-    IF(NumberGlobalXElements<=0) CALL HANDLE_ERROR("Invalid number of X elements.")
-    CALL GET_COMMAND_ARGUMENT(5,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 5.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) NumberGlobalYElements
-    IF(NumberGlobalYElements<=0) CALL HANDLE_ERROR("Invalid number of Y elements.")
-    CALL GET_COMMAND_ARGUMENT(6,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 6.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) NumberGlobalZElements
-    IF(NumberGlobalZElements<0) CALL HANDLE_ERROR("Invalid number of Z elements.")
+    CALL GET_COMMAND_ARGUMENT(4,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 4.")
+    READ(CommandArgument(1:ArgumentLength),*) NumberGlobalXElements
+    IF(NumberGlobalXElements<=0) CALL HandleError("Invalid number of X elements.")
+    CALL GET_COMMAND_ARGUMENT(5,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 5.")
+    READ(CommandArgument(1:ArgumentLength),*) NumberGlobalYElements
+    IF(NumberGlobalYElements<=0) CALL HandleError("Invalid number of Y elements.")
+    CALL GET_COMMAND_ARGUMENT(6,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 6.")
+    READ(CommandArgument(1:ArgumentLength),*) NumberGlobalZElements
+    IF(NumberGlobalZElements<0) CALL HandleError("Invalid number of Z elements.")
     ! solver type (0: direct linear solve,1: linear iterative solve)
-    CALL GET_COMMAND_ARGUMENT(7,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 7.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) SolverIsDirect
-    IF((SolverIsDirect<0).OR.(SolverIsDirect>1)) CALL HANDLE_ERROR("Invalid solver type.")
+    CALL GET_COMMAND_ARGUMENT(7,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 7.")
+    READ(CommandArgument(1:ArgumentLength),*) SolverIsDirect
+    IF((SolverIsDirect<0).OR.(SolverIsDirect>1)) CALL HandleError("Invalid solver type.")
     ! Jacobian type (0: analytical Jacobian, 1: finite difference Jacobian)
-    CALL GET_COMMAND_ARGUMENT(8,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 8.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) JACOBIAN_FD
-    IF((JACOBIAN_FD<0).OR.(JACOBIAN_FD>1)) CALL HANDLE_ERROR("Invalid Jacobian type.")
+    CALL GET_COMMAND_ARGUMENT(8,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 8.")
+    READ(CommandArgument(1:ArgumentLength),*) JACOBIAN_FD
+    IF((JACOBIAN_FD<0).OR.(JACOBIAN_FD>1)) CALL HandleError("Invalid Jacobian type.")
     ! Material Parameter -> Mooney-Rivlin parameter 1
-    CALL GET_COMMAND_ARGUMENT(9,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 9.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) MooneyRivlin1
-    IF(MooneyRivlin1<=0) CALL HANDLE_ERROR("Invalid Mooney-Rivlin specification.")
+    CALL GET_COMMAND_ARGUMENT(9,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 9.")
+    READ(CommandArgument(1:ArgumentLength),*) MooneyRivlin1
+    IF(MooneyRivlin1<=0) CALL HandleError("Invalid Mooney-Rivlin specification.")
     ! Material Parameter -> Mooney-Rivlin parameter 2
-    CALL GET_COMMAND_ARGUMENT(10,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 10.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) MooneyRivlin2
-    IF(MooneyRivlin2<0) CALL HANDLE_ERROR("Invalid MooneyRivlin specification.")
+    CALL GET_COMMAND_ARGUMENT(10,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 10.")
+    READ(CommandArgument(1:ArgumentLength),*) MooneyRivlin2
+    IF(MooneyRivlin2<0) CALL HandleError("Invalid MooneyRivlin specification.")
     ! Is mesh user-defined?
-    CALL GET_COMMAND_ARGUMENT(11,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 11.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) useGeneratedMesh
-    IF((useGeneratedMesh<0).OR.(useGeneratedMesh>1)) CALL HANDLE_ERROR("Invalid mesh type.")
+    CALL GET_COMMAND_ARGUMENT(11,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 11.")
+    READ(CommandArgument(1:ArgumentLength),*) useGeneratedMesh
+    IF((useGeneratedMesh<0).OR.(useGeneratedMesh>1)) CALL HandleError("Invalid mesh type.")
     ! BC -> Maximum Displacement in percent
-    CALL GET_COMMAND_ARGUMENT(12,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 12.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) BCDISP_MAX
-    IF(BCDISP_MAX<=-1.0) CALL HANDLE_ERROR("Invalid BC specification.")
+    CALL GET_COMMAND_ARGUMENT(12,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 12.")
+    READ(CommandArgument(1:ArgumentLength),*) BCDISP_MAX
+    IF(BCDISP_MAX<=-1.0) CALL HandleError("Invalid BC specification.")
+    ! BC -> Maximum Displacement in percent
+    CALL GET_COMMAND_ARGUMENT(13,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 13.")
+    READ(CommandArgument(1:ArgumentLength),*) NumberOfLoadIncrements
+    IF(NumberOfLoadIncrements<1) CALL HandleError("Invalid number of load increments.")
     ! Do boundary condition as Dirichlet?
-    CALL GET_COMMAND_ARGUMENT(13,COMMAND_ARGUMENT,ARGUMENT_LENGTH,STATUS)
-    IF(STATUS>0) CALL HANDLE_ERROR("Error for command argument 13.")
-    READ(COMMAND_ARGUMENT(1:ARGUMENT_LENGTH),*) bcType
-    IF((bcType<0).OR.(bcType>2)) CALL HANDLE_ERROR("Invalid BC type.")
+    CALL GET_COMMAND_ARGUMENT(14,CommandArgument,ArgumentLength,ArgumentStatus)
+    IF(ArgumentStatus>0) CALL HandleError("Error for command argument 14.")
+    READ(CommandArgument(1:ArgumentLength),*) bcType
+    IF((bcType<0).OR.(bcType>2)) CALL HandleError("Invalid BC type.")
+    WRITE(*,*) "!=============================================================="
+    WRITE(*,*) "User arguments:"
+    WRITE(*,*) "  Width                 = ",Width
+    WRITE(*,*) "  Height                = ",Height
+    WRITE(*,*) "  Length                = ",Length
+    WRITE(*,*) "  NumberGlobalXElements = ",NumberGlobalXElements
+    WRITE(*,*) "  NumberGlobalYElements = ",NumberGlobalYElements
+    WRITE(*,*) "  NumberGlobalZElements = ",NumberGlobalZElements
+    WRITE(*,*) "  SolverIsDirect        = ",SolverIsDirect
+    WRITE(*,*) "  JACOBIAN_FD           = ",JACOBIAN_FD
+    WRITE(*,*) "  MooneyRivlin1         = ",MooneyRivlin1
+    WRITE(*,*) "  MooneyRivlin2         = ",MooneyRivlin2
+    WRITE(*,*) "  useGeneratedMesh      = ",useGeneratedMesh
+    WRITE(*,*) "  BCDISP_MAX            = ",BCDISP_MAX
+    WRITE(*,*) "  bcType                = ",bcType
+    WRITE(*,*) "!=============================================================="
   ELSE
     ! defaults for input arguments
-    WIDTH                         = 1.0_CMISSRP
-    HEIGHT                        = 0.2_CMISSRP
-    LENGTH                        = 0.2_CMISSRP
+    Width                         = 1.0_CMISSRP
+    Height                        = 0.2_CMISSRP
+    Length                        = 0.2_CMISSRP
     NumberGlobalXElements         = 2
     NumberGlobalYElements         = 2
     NumberGlobalZElements         = 2
@@ -261,28 +301,37 @@ PROGRAM FORTRANEXAMPLE
     MooneyRivlin2                 = 0.0_CMISSRP  ! If MooneyRivlin2 == 0 --> Neo-Hookean solid
     useGeneratedMesh              = 1 ! generated mesh by default
     BCDISP_MAX                    = 0.2_CMISSRP
+    NumberOfLoadIncrements        = 1 ! one load increment by default
     bcType                        = 0 ! 0 - Dirichlet BC by default; else: 1 - Neumann_integrated, 2 - Neumann_point
-  ENDIF
+    WRITE(*,*) "!=============================================================="
+    WRITE(*,*) "Default arguments:"
+    WRITE(*,*) "  Width                 = ",Width
+    WRITE(*,*) "  Height                = ",Height
+    WRITE(*,*) "  Length                = ",Length
+    WRITE(*,*) "  NumberGlobalXElements = ",NumberGlobalXElements
+    WRITE(*,*) "  NumberGlobalYElements = ",NumberGlobalYElements
+    WRITE(*,*) "  NumberGlobalZElements = ",NumberGlobalZElements
+    WRITE(*,*) "  SolverIsDirect        = ",SolverIsDirect
+    WRITE(*,*) "  JACOBIAN_FD           = ",JACOBIAN_FD
+    WRITE(*,*) "  MooneyRivlin1         = ",MooneyRivlin1
+    WRITE(*,*) "  MooneyRivlin2         = ",MooneyRivlin2
+    WRITE(*,*) "  useGeneratedMesh      = ",useGeneratedMesh
+    WRITE(*,*) "  BCDISP_MAX            = ",BCDISP_MAX
+    WRITE(*,*) "  bcType                = ",bcType
+    WRITE(*,*) "!=============================================================="
+  END IF
   IF(NumberGlobalZElements >= 1) THEN
     NumberOfDimensions  = 3
   ELSE
     NumberOfDimensions  = 2
   END IF
   NumberOfNodes       = (2*NumberGlobalXElements+1)*(2*NumberGlobalYElements+1)*(2*NumberGlobalZElements+1)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-  NumberOfGaussXi=3
-  PressureMeshComponent=2
-  PressureInterpolationType=CMFE_BASIS_LINEAR_LAGRANGE_INTERPOLATION
-  WRITE(*,'("Interpolation: ", i3)') DisplacementInterpolationType
-  WRITE(*,'("Elements: ", 3 i3)') NumberGlobalXElements,NumberGlobalYElements,NumberGlobalZElements
-  WRITE(*,'("Scaling type: ", i3)') ScalingType
 
   !Get the number of computational nodes and this computational node number
   CALL cmfe_ComputationalNumberOfNodesGet(NumberOfComputationalNodes,Err)
   CALL cmfe_ComputationalNodeNumberGet(ComputationalNodeNumber,Err)
 
-  NumberOfDomains=NumberOfComputationalNodes
+  NumberOfDomains = NumberOfComputationalNodes
 
   !Create a 3D rectangular cartesian coordinate system
   CALL cmfe_CoordinateSystem_Initialise(CoordinateSystem,Err)
@@ -314,13 +363,13 @@ PROGRAM FORTRANEXAMPLE
         & DisplacementInterpolationType],Err)
     IF(NumberOfGaussXi>0) THEN
       CALL cmfe_Basis_QuadratureNumberOfGaussXiSet(DisplacementBasis,[NumberOfGaussXi,NumberOfGaussXi,NumberOfGaussXi],Err)
-    ENDIF
+    END IF
   ELSE
     CALL cmfe_Basis_InterpolationXiSet(DisplacementBasis,[DisplacementInterpolationType, &
         & DisplacementInterpolationType],Err)
     IF(NumberOfGaussXi>0) THEN
       CALL cmfe_Basis_QuadratureNumberOfGaussXiSet(DisplacementBasis,[NumberOfGaussXi,NumberOfGaussXi],Err)
-    ENDIF
+    END IF
   END IF
   CALL cmfe_Basis_CreateFinish(DisplacementBasis,Err)
 
@@ -341,13 +390,13 @@ PROGRAM FORTRANEXAMPLE
         & PressureInterpolationType],Err)
     IF(NumberOfGaussXi>0) THEN
       CALL cmfe_Basis_QuadratureNumberOfGaussXiSet(PressureBasis,[NumberOfGaussXi,NumberOfGaussXi,NumberOfGaussXi],Err)
-    ENDIF
+    END IF
   ELSE
     CALL cmfe_Basis_InterpolationXiSet(PressureBasis,[PressureInterpolationType, &
         & PressureInterpolationType],Err)
     IF(NumberOfGaussXi>0) THEN
       CALL cmfe_Basis_QuadratureNumberOfGaussXiSet(PressureBasis,[NumberOfGaussXi,NumberOfGaussXi],Err)
-    ENDIF
+    END IF
   END IF
   CALL cmfe_Basis_CreateFinish(PressureBasis,Err)
 
@@ -365,29 +414,29 @@ PROGRAM FORTRANEXAMPLE
       CALL cmfe_GeneratedMesh_ExtentSet(GeneratedMesh,[Width,Height,Length],Err)
       CALL cmfe_GeneratedMesh_NumberOfElementsSet(GeneratedMesh,[NumberGlobalXElements,NumberGlobalYElements, &
         & NumberGlobalZElements],Err)
-    ENDIF
+    END IF
     CALL cmfe_GeneratedMesh_CreateFinish(GeneratedMesh,MeshUserNumber,Mesh,Err)
   ELSE
     ! get user-defined mesh file name
     WRITE(Filename, "(A26,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A3)") &
       & "src/cheart/meshes/domain_l", &
-      & INT(WIDTH),"x",INT(HEIGHT),"x",INT(LENGTH), &
+      & INT(Width),"x",INT(Height),"x",INT(Length), &
       & "_n", &
       & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
       & "_i",DisplacementInterpolationType,"_FE"
     ! Check whether file exists
     INQUIRE(FILE=trim(Filename)//".X",EXIST=FileExists)
     IF(.NOT.FileExists) THEN
-      CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".X")
-    ENDIF
+      CALL HandleError("File does not exist: "//trim(Filename)//".X")
+    END IF
     INQUIRE(FILE=trim(Filename)//".T",EXIST=FileExists)
     IF(.NOT.FileExists) THEN
-      CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".T")
-    ENDIF
+      CALL HandleError("File does not exist: "//trim(Filename)//".T")
+    END IF
     INQUIRE(FILE=trim(Filename)//".B",EXIST=FileExists)
     IF(.NOT.FileExists) THEN
-      CALL HANDLE_ERROR("File does not exist: "//trim(Filename)//".B")
-    ENDIF
+      CALL HandleError("File does not exist: "//trim(Filename)//".B")
+    END IF
     ! Read CHeart mesh based on the given command line arguments
     WRITE(*,*) "Reading CHeart mesh data file "//TRIM(Filename)
     CALL ReadMesh(trim(Filename), NodesImport, ElementsImport, BoundaryPatchesImport, "CHeart", Err)
@@ -495,10 +544,10 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_EquationsSet_DependentCreateStart(EquationsSet,FieldDependentUserNumber,DependentField,Err)
   CALL cmfe_Field_VariableLabelSet(DependentField,CMFE_FIELD_U_VARIABLE_TYPE,"Dependent",Err)
   CALL cmfe_Field_VariableLabelSet(DependentField,CMFE_FIELD_DELUDELN_VARIABLE_TYPE,"Derivative",Err)
-  DO component_idx=1,NumberOfDimensions
-    CALL cmfe_Field_ComponentMeshComponentSet(DependentField,CMFE_FIELD_U_VARIABLE_TYPE,component_idx,1,Err)
-    CALL cmfe_Field_ComponentMeshComponentSet(DependentField,CMFE_FIELD_DELUDELN_VARIABLE_TYPE,component_idx,1,Err)
-  ENDDO
+  DO ComponentIdx=1,NumberOfDimensions
+    CALL cmfe_Field_ComponentMeshComponentSet(DependentField,CMFE_FIELD_U_VARIABLE_TYPE,ComponentIdx,1,Err)
+    CALL cmfe_Field_ComponentMeshComponentSet(DependentField,CMFE_FIELD_DELUDELN_VARIABLE_TYPE,ComponentIdx,1,Err)
+  END DO
   CALL cmfe_Field_ComponentMeshComponentSet(DependentField,CMFE_FIELD_U_VARIABLE_TYPE,NumberOfDimensions+1, &
     & PressureMeshComponent,Err)
   CALL cmfe_Field_ComponentMeshComponentSet(DependentField,CMFE_FIELD_DELUDELN_VARIABLE_TYPE,NumberOfDimensions+1, &
@@ -530,10 +579,10 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_EquationsSet_SourceCreateStart(EquationsSet,FieldSourceUserNumber,SourceField,Err)
   CALL cmfe_Field_ScalingTypeSet(SourceField,ScalingType,Err)
   CALL cmfe_EquationsSet_SourceCreateFinish(EquationsSet,Err)
-  DO component_idx=1,NumberOfDimensions
+  DO ComponentIdx=1,NumberOfDimensions
     CALL cmfe_Field_ComponentValuesInitialise(SourceField,CMFE_FIELD_U_VARIABLE_TYPE,CMFE_FIELD_VALUES_SET_TYPE, &
-      & component_idx,Gravity(component_idx),Err)
-  ENDDO
+      & ComponentIdx,Gravity(ComponentIdx),Err)
+  END DO
 
   !Create the equations set equations
   CALL cmfe_Equations_Initialise(Equations,Err)
@@ -543,10 +592,10 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_EquationsSet_EquationsCreateFinish(EquationsSet,Err)
 
   !Initialise dependent field from undeformed geometry and displacement bcs and set hydrostatic pressure
-  DO component_idx=1,NumberOfDimensions
+  DO ComponentIdx=1,NumberOfDimensions
     CALL cmfe_Field_ParametersToFieldParametersComponentCopy(GeometricField,CMFE_FIELD_U_VARIABLE_TYPE, &
       & CMFE_FIELD_VALUES_SET_TYPE, &
-      & component_idx,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,CMFE_FIELD_VALUES_SET_TYPE,component_idx,Err)
+      & ComponentIdx,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,CMFE_FIELD_VALUES_SET_TYPE,ComponentIdx,Err)
   END DO
   CALL cmfe_Field_ComponentValuesInitialise(DependentField,CMFE_FIELD_U_VARIABLE_TYPE,CMFE_FIELD_VALUES_SET_TYPE, &
     & NumberOfDimensions+1,0.0_CMISSRP,Err)
@@ -566,6 +615,7 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_ControlLoop_Initialise(ControlLoop,Err)
   CALL cmfe_Problem_ControlLoopGet(Problem,CMFE_CONTROL_LOOP_NODE,ControlLoop,Err)
   CALL cmfe_ControlLoop_MaximumIterationsSet(ControlLoop,NumberOfLoadIncrements,Err)
+  CALL cmfe_ControlLoop_OutputTypeSet(CMFE_CONTROL_LOOP_PROGRESS_OUTPUT,Err)
   CALL cmfe_Problem_ControlLoopCreateFinish(Problem,Err)
 
   !Create the problem solvers
@@ -620,23 +670,30 @@ PROGRAM FORTRANEXAMPLE
     CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE,RightSurfaceNodes,RightNormalXi,Err)
 
     ! Dirichlet BC at x=0
-    DO node_idx=1,SIZE(LeftSurfaceNodes,1)
-      NodeNumber=LeftSurfaceNodes(node_idx)
+    DO NodeIdx=1,SIZE(LeftSurfaceNodes,1)
+      NodeNumber=LeftSurfaceNodes(NodeIdx)
       CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
       IF(NodeDomain==ComputationalNodeNumber) THEN
         ! constrain x-direction
         CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
           & 1,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
-      ENDIF
-    ENDDO
+      END IF
+    END DO
     ! Dirichlet BC at x=0, y=ly/2, z=z/2
     NodeNumber=(NumberOfNodes/2)+1-((2*NumberGlobalXElements+1)/2) ! implicit FLOOR() !!!
     CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
     IF(NodeDomain==ComputationalNodeNumber) THEN
-      DO component_idx=2,NumberOfDimensions
+      DO ComponentIdx=2,NumberOfDimensions
         CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-          & component_idx,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
+          & ComponentIdx,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
       END DO
+    END IF
+    ! Dirichlet BC at x=0, y=0, z=z/2 to avoid rotations
+    NodeNumber=(2*NumberGlobalXElements+1)*NumberGlobalYElements+1
+    CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+    IF(NodeDomain==ComputationalNodeNumber) THEN
+      CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+        & 2,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
     END IF
 
     ! stretch
@@ -644,19 +701,19 @@ PROGRAM FORTRANEXAMPLE
     IF(bcType==0) THEN
       WRITE(*,*) "Applying displacement BC.."
       ! Dirichlet BC at x=lx
-      DO node_idx=1,SIZE(RightSurfaceNodes,1)
-        NodeNumber=RightSurfaceNodes(node_idx)
+      DO NodeIdx=1,SIZE(RightSurfaceNodes,1)
+        NodeNumber=RightSurfaceNodes(NodeIdx)
         CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
         IF(NodeDomain==ComputationalNodeNumber) THEN
           ! constrain x-direction
-          CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-            & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
-        ENDIF
-      ENDDO
+          CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_FIXED_INCREMENTED,Width*BCDISP_MAX,Err)
+        END IF
+      END DO
     ELSE IF(bcType==1) THEN
       WRITE(*,*) "Applying traction BC.."
       ! corresponding traction value
-      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
+      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * Height * Length
       WRITE(*,*) "  getting nodal weights"
       ! compute consistent nodal weights
       CALL GeneratedMesh_SurfaceWeightsGet(nodalWeights,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE, &
@@ -664,33 +721,32 @@ PROGRAM FORTRANEXAMPLE
       WRITE(*,*) "  applying consistent nodal forces"
       ! apply consistent nodal forces based on nodal weights
       ! Neumann BC at x=lx
-      DO node_idx=1,SIZE(RightSurfaceNodes,1)
-        NodeNumber=RightSurfaceNodes(node_idx)
+      DO NodeIdx=1,SIZE(RightSurfaceNodes,1)
+        NodeNumber=RightSurfaceNodes(NodeIdx)
         CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
         IF(NodeDomain==ComputationalNodeNumber) THEN
-          NodalForce=NeumannBCvalue*nodalWeights(node_idx)
+          NodalForce=NeumannBCvalue*nodalWeights(NodeIdx)
           CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
-        ENDIF
-      ENDDO
+        END IF
+      END DO
     ELSE IF(bcType==2) THEN
       WRITE(*,*) "Applying traction BC.."
       ! corresponding traction value
       NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda)
       WRITE(*,*) "  applying point forces"
       ! apply point forces, Neumann BC at x=lx
-      DO node_idx=1,SIZE(RightSurfaceNodes,1)
-        NodeNumber=RightSurfaceNodes(node_idx)
+      DO NodeIdx=1,SIZE(RightSurfaceNodes,1)
+        NodeNumber=RightSurfaceNodes(NodeIdx)
         CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
         IF(NodeDomain==ComputationalNodeNumber) THEN
           CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField, &
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue,Err)
-        ENDIF
-      ENDDO
-      WRITE(*,*) "Warning: BC type 2 not fully implemented for generated mesh."
-      STOP
+        END IF
+      END DO
+      CALL HandleError("Warning: BC type 2 not fully implemented for generated mesh.")
     END IF
   ! user-defined mesh
   ELSE
@@ -715,11 +771,16 @@ PROGRAM FORTRANEXAMPLE
         CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
           & 1,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
         ! constrain center-node also in y- and z-direction
-        IF((ABS(y-0.5*HEIGHT)<1.0e-12).AND.(ABS(z-0.5*LENGTH)<1.0e-12)) THEN
+        IF((ABS(y-0.5*Height)<1.0e-12).AND.(ABS(z-0.5*Length)<1.0e-12)) THEN
           CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
             & 2,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
           CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
             & 3,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
+        END IF
+        ! constrain bottom/center-node also in y-direction
+        IF((ABS(y-0.5*Height)<1.0e-12).AND.(ABS(z-0.0*Length)<1.0e-12)) THEN
+          CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 2,CMFE_BOUNDARY_CONDITION_FIXED,0.0_CMISSRP,Err)
         END IF
       END IF
     END DO
@@ -739,15 +800,15 @@ PROGRAM FORTRANEXAMPLE
         IF(NodeDomain==ComputationalNodeNumber) THEN
           ! Dirichlet BC at x=lx
           CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
-            & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
+            & 1,CMFE_BOUNDARY_CONDITION_FIXED_INCREMENTED,Width*lambda,Err)
         END IF
       END DO
     ! apply Neumann integrated BC
     ELSE IF(bcType==1) THEN
       WRITE(*,*) "Applying traction BC.."
-      node_idx  = 1
+      NodeIdx  = 1
       ! corresponding traction value
-      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
+      NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * Height * Length
       WRITE(*,*) "  getting nodal weights"
       ! compute consistent nodal weights
       CALL ImportedMesh_SurfaceWeightsGet(nodalWeights,NumberOfNodesPerElement,Err)
@@ -758,13 +819,13 @@ PROGRAM FORTRANEXAMPLE
         IF(NodeDomain==ComputationalNodeNumber) THEN
           ! apply consistent nodal forces based on nodal weights
           ! Neumann BC at x=lx
-          NodalForce=NeumannBCvalue*nodalWeights(node_idx)/(NumberGlobalYElements*NumberGlobalZElements)
+          NodalForce=NeumannBCvalue*nodalWeights(NodeIdx)/(NumberGlobalYElements*NumberGlobalZElements)
           CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED,NodalForce,Err)
         END IF
-        node_idx  = node_idx + 1
-        IF(node_idx>9) node_idx = 1
+        NodeIdx  = NodeIdx + 1
+        IF(NodeIdx>9) NodeIdx = 1
       END DO
     ! apply Neumann point BC
     ELSE IF(bcType==2) THEN
@@ -781,8 +842,7 @@ PROGRAM FORTRANEXAMPLE
             & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue,Err)
         END IF
       END DO
-      WRITE(*,*) "Warning: BC type 2 not fully implemented for user-defined mesh."
-      STOP
+      CALL HandleError("Warning: BC type 2 not fully implemented for user-defined mesh.")
     END IF
   END IF
 
@@ -792,64 +852,44 @@ PROGRAM FORTRANEXAMPLE
   !Solve problem
   CALL cmfe_Problem_Solve(Problem,Err)
 
-  ! convenience switch for creating reference results
-  ! TODO remove before release
-  IF(.FALSE.) THEN
-    ! Set export file name
-    WRITE(filename, "(A24,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A2,I1,A3,I1,A3,I1,A3,I1)") &
-      & "results/reference/iron/l", &
-      & INT(WIDTH),"x",INT(HEIGHT),"x",INT(LENGTH), &
-      & "_n", &
-      & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
-      & "_i",displacementInterpolationType,"_s",SolverIsDirect, &
-      & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcType
-    ! make sure directories exist
-    INQUIRE(file="./results/", exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir ./results/")
-    END IF
-    INQUIRE(file="./results/reference/", exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir ./results/reference/")
-    END IF
-    INQUIRE(file="./results/reference/iron/", exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir ./results/reference/iron/")
-    END IF
-    INQUIRE(file=trim(filename), exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir "//trim(filename))
-    END IF
-  ELSE
-    ! Set export file name
-    WRITE(filename, "(A21,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A2,I1,A3,I1,A3,I1,A3,I1)") &
+  ! Set export file name
+  IF(NumberGlobalXElements<10) THEN
+    WRITE(Filename, "(A21,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A2,I1,A3,I1,A3,I1,A3,I1)") &
       & "results/current_run/l", &
-      & INT(WIDTH),"x",INT(HEIGHT),"x",INT(LENGTH), &
+      & INT(Width),"x",INT(Height),"x",INT(Length), &
       & "_n", &
       & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
       & "_i",displacementInterpolationType,"_s",SolverIsDirect, &
       & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcType
-    ! make sure directories exist
-    INQUIRE(file="./results/", exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir ./results/")
-    END IF
-    INQUIRE(file="./results/current_run/", exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir ./results/current_run/")
-    END IF
-    INQUIRE(file=trim(filename), exist=directory_exists)
-    IF (.NOT.directory_exists) THEN
-      CALL execute_command_line ("mkdir "//trim(filename))
-    END IF
+  ELSE IF((NumberGlobalXElements>9).AND.(NumberGlobalXElements<100)) THEN
+    WRITE(Filename, "(A21,I1,A1,I1,A1,I1,A2,I2,A1,I1,A1,I1,A2,I1,A2,I1,A3,I1,A3,I1,A3,I1)") &
+      & "results/current_run/l", &
+      & INT(Width),"x",INT(Height),"x",INT(Length), &
+      & "_n", &
+      & NumberGlobalXElements,"x",NumberGlobalYElements,"x",NumberGlobalZElements, &
+      & "_i",displacementInterpolationType,"_s",SolverIsDirect, &
+      & "_fd",JACOBIAN_FD,"_gm",useGeneratedMesh,"_bc",bcType
+  END IF
+  ! make sure directories exist
+  INQUIRE(file="./results/", exist=directory_exists)
+  IF (.NOT.directory_exists) THEN
+    CALL execute_command_line ("mkdir -p ./results/")
+  END IF
+  INQUIRE(file="./results/current_run/", exist=directory_exists)
+  IF (.NOT.directory_exists) THEN
+    CALL execute_command_line ("mkdir -p ./results/current_run/")
+  END IF
+  INQUIRE(file=trim(Filename), exist=directory_exists)
+  IF (.NOT.directory_exists) THEN
+    CALL execute_command_line ("mkdir -p "//trim(Filename))
   END IF
 
   ! Export solution
   CALL cmfe_Fields_Initialise(Fields,Err)
   CALL cmfe_Fields_Create(Region,Fields,Err)
-  filename=trim(filename)//trim("/Example")
-  CALL cmfe_Fields_NodesExport(Fields,filename,"FORTRAN",Err)
-  CALL cmfe_Fields_ElementsExport(Fields,filename,"FORTRAN",Err)
+  Filename=trim(Filename)//trim("/Example")
+  CALL cmfe_Fields_NodesExport(Fields,Filename,"FORTRAN",Err)
+  CALL cmfe_Fields_ElementsExport(Fields,Filename,"FORTRAN",Err)
   CALL cmfe_Fields_Finalise(Fields,Err)
 
   IF(ALLOCATED(nodalWeights))           DEALLOCATE(nodalWeights)
@@ -864,12 +904,13 @@ PROGRAM FORTRANEXAMPLE
 
 CONTAINS
 
-  SUBROUTINE HANDLE_ERROR(ERROR_STRING)
-    CHARACTER(LEN=*), INTENT(IN) :: ERROR_STRING
+  SUBROUTINE HandleError(ErrorString)
+    CHARACTER(LEN=*), INTENT(IN) :: ErrorString
 
-    WRITE(*,'(">>ERROR: ",A)') ERROR_STRING(1:LEN_TRIM(ERROR_STRING))
+    WRITE(*,'(">>ERROR: ",A)') ErrorString(1:LEN_TRIM(ErrorString))
     STOP
-  END SUBROUTINE HANDLE_ERROR
+
+  END SUBROUTINE HandleError
 
 END PROGRAM FORTRANEXAMPLE
 

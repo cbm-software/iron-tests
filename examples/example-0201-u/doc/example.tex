@@ -7,8 +7,6 @@
 %
 Example uses generated or user-defined regular meshes in CHeart mesh format
 and solves a static problem, i.e., applies the boundary conditions in one step.\\[3ex]
-
-Issues/TBD: 2D, analytical Jacobian
 %
 %===============================================================================
 %
@@ -63,34 +61,27 @@ Note: The pressure has an opposite sign compared to CHeart and KerMOR.
         \subitem{integer: number of elements in x-direction}
         \subitem{integer: number of elements in y-direction}
         \subitem{integer: number of elements in z-direction}
-        \subitem{integer: use direct solver?}
-        \subitem{integer: use finite-difference Jacobian}
+        \subitem{integer: solver type (0 - iterative, 1 - direct)}
+        \subitem{integer: Jacobian type (0 - analytic, 1 - finite-difference)}
         \subitem{float: 1st Mooney-Rivlin parameter}
         \subitem{float: 2nd Mooney-Rivlin parameter (set to zero)}
-        \subitem{integer: use generated mesh?}
-        \subitem{float: maximum stretch}
-        \subitem{integer: use only Dirichlet BC?}
+        \subitem{integer: mesh type (0 - user-defined, 1 - generated)}
+        \subitem{float: maximum stretch at right surface}
+        \subitem{integer: number of load increments}
+        \subitem{integer: BC type at right surface (0 - Dirichlet, 1 - Neumann\_integrated, 2 - Neumann\_point)}
     \item{Commandline arguments for tests are:}
-        \subitem{2.0 1.0 1.0  4 2 2 1 1 17.85 0.0 1 0.2 1}
-        \subitem{2.0 1.0 1.0  4 2 2 1 1 17.85 0.0 1 0.2 0}
-        \subitem{2.0 1.0 1.0  8 4 4 1 1 17.85 0.0 1 0.2 1}
-        \subitem{2.0 1.0 1.0  8 4 4 1 1 17.85 0.0 1 0.2 0}
-        \subitem{2.0 1.0 1.0 16 8 8 1 1 17.85 0.0 1 0.2 1}
-        \subitem{2.0 1.0 1.0 16 8 8 1 1 17.85 0.0 1 0.2 0}
-        \subitem{2.0 1.0 1.0  4 2 2 1 1 17.85 0.0 0 0.2 1}
-        \subitem{2.0 1.0 1.0  4 2 2 1 1 17.85 0.0 0 0.2 0}
-        \subitem{2.0 1.0 1.0  8 4 4 1 1 17.85 0.0 0 0.2 1}
-        \subitem{2.0 1.0 1.0  8 4 4 1 1 17.85 0.0 0 0.2 0}
-        \subitem{2.0 1.0 1.0 16 8 8 1 1 17.85 0.0 0 0.2 1}
-        \subitem{2.0 1.0 1.0 16 8 8 1 1 17.85 0.0 0 0.2 0}
+        \subitem{see file run\_example.sh}
     \item{Note: Binary uses command line arguments to search for the relevant mesh files if user-defined meshes are selected.}
+    \item{Note: BC type has not been implemented yet. Thus, it is not being tested.}
 \end{itemize}
 %
 %===============================================================================
 %
 \subsubsection{Result summary}
 %
-We use iron reference results that were compared against an analytical solution.
+We compare the solution vector (contains all displacement components and
+pressure values) against an analytical solution with a tolerance of $10^{-11}$
+on the normalized RMSE.
 %
 \verbatiminput{examples/example-0201-u/results/results.summary}
 \verbatiminput{examples/example-0201-u/results/failed.tests}
@@ -98,15 +89,8 @@ We use iron reference results that were compared against an analytical solution.
 \begin{figure}[h!]
     \centering 
     \includegraphics[width=0.9\columnwidth]{examples/example-0201-u/doc/figures/iron_reference_3D.eps} 
-    \caption{3D results, iron reference w/ command line arguments [...].}
+    \caption{3D results, iron reference.}
     \label{example-0201-u-iron-3D-reference-fig}
-\end{figure}
-%
-\begin{figure}[h!]
-    \centering 
-%    \includegraphics[width=0.9\columnwidth]{examples/example-0201-u/doc/figures/current_run_l2x1x1_n8x4x4_i1_s0.eps} 
-    \caption{3D results, current run w/ command line arguments [...].}
-    \label{example-0201-u-current-run-3D-fig}
 \end{figure}
 %
 %===============================================================================
