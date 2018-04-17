@@ -9,14 +9,14 @@ default:
 	make example-0011
 	make example-0012
 	make example-0013
-	make example-0101
-	make example-0102
-	make example-0111
-	make example-0112
-	make example-0302-u
-	make example-0401
-	make example-0402
-	make example-0404-c
+	make example-0101   #fails!!!!
+	make example-0102   #fails!!!!
+	make example-0111   #fails!!!!
+	make example-0112   #fails!!!!
+	make example-0302-u #fails!!!! needs mesh reader!!!
+	make example-0401   #fails!!!! needs mesh reader!!!
+	make example-0402   #fails!!!! needs mesh reader!!!
+	make example-0404-c #fails!!!!
 	make collect-results
 	make create-figures
 	make latexmk-once
