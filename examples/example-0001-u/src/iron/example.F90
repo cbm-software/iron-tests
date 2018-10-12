@@ -272,8 +272,8 @@ PROGRAM LAPLACEEXAMPLE
   CALL cmfe_Basis_CreateFinish(Basis,Err)
 
   ! get user-defined mesh file name
-  WRITE(Filename, "(A29,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A3)") &
-    & "../src/cheart/meshes/domain_l", &
+  WRITE(Filename, "(A26,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A3)") &
+    & "src/cheart/meshes/domain_l", &
     & INT(WIDTH),"x",INT(HEIGHT),"x",INT(LENGTH), &
     & "_n", &
     & NUMBER_GLOBAL_X_ELEMENTS,"x",NUMBER_GLOBAL_Y_ELEMENTS,"x",NUMBER_GLOBAL_Z_ELEMENTS, &
