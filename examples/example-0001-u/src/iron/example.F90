@@ -510,8 +510,10 @@ PROGRAM LAPLACEEXAMPLE
   ! Easy alternative:
   !CALL cmfe_Fields_NodesExport(Fields,"laplace_equation","FORTRAN",Err)
   !CALL cmfe_Fields_ElementsExport(Fields,"laplace_equation","FORTRAN",Err)
-  
-  !Finialise CMISS
+
+  CALL cmfe_Fields_Finalise(Fields,Err)  
+
+  !Finalise CMISS
   ! Deallocate variables that store mesh data as soon as we don't need them anymore
   IF(ALLOCATED(NodesImport))            DEALLOCATE(NodesImport)
   IF(ALLOCATED(ElementsImport))         DEALLOCATE(ElementsImport)
