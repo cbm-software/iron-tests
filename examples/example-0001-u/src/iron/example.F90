@@ -272,8 +272,8 @@ PROGRAM LAPLACEEXAMPLE
   CALL cmfe_Basis_CreateFinish(Basis,Err)
 
   ! get user-defined mesh file name
-  WRITE(Filename, "(A26,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A3)") &
-    & "src/cheart/meshes/domain_l", &
+  WRITE(Filename, "(A29,I1,A1,I1,A1,I1,A2,I1,A1,I1,A1,I1,A2,I1,A3)") &
+    & "../src/cheart/meshes/domain_l", &
     & INT(WIDTH),"x",INT(HEIGHT),"x",INT(LENGTH), &
     & "_n", &
     & NUMBER_GLOBAL_X_ELEMENTS,"x",NUMBER_GLOBAL_Y_ELEMENTS,"x",NUMBER_GLOBAL_Z_ELEMENTS, &
@@ -506,11 +506,11 @@ PROGRAM LAPLACEEXAMPLE
   filename=trim(filename)
 
   ! With develop 10.2018: Directory should be created first, this call will cause an error:
-  CALL cmfe_Fields_NodesExport(Fields,filename,"FORTRAN",Err)
-  CALL cmfe_Fields_ElementsExport(Fields,filename,"FORTRAN",Err)
+  !CALL cmfe_Fields_NodesExport(Fields,filename,"FORTRAN",Err)
+  !CALL cmfe_Fields_ElementsExport(Fields,filename,"FORTRAN",Err)
   ! Easy alternative:
-  !CALL cmfe_Fields_NodesExport(Fields,"laplace_equation","FORTRAN",Err)
-  !CALL cmfe_Fields_ElementsExport(Fields,"laplace_equation","FORTRAN",Err)
+  CALL cmfe_Fields_NodesExport(Fields,"laplace_equation","FORTRAN",Err)
+  CALL cmfe_Fields_ElementsExport(Fields,"laplace_equation","FORTRAN",Err)
   
   !Finialise CMISS
   ! Deallocate variables that store mesh data as soon as we don't need them anymore
