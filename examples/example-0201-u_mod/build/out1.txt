@@ -1,0 +1,1745 @@
+Interpolation:   2
+Elements:   1  1  1
+Scaling type:   3
+ Lagrange-Hermite TP type
+ Lagrange-Hermite TP type
+ Applying traction BC..
+   getting nodal weights
+   applying consistent nodal forces
+   Node_idx
+           1
+   NodeNumber
+           3
+   NodalForce
+   2.7777777777777780E-002
+   Node_idx
+           2
+   NodeNumber
+           6
+   NodalForce
+  0.11111111111111112     
+   Node_idx
+           3
+   NodeNumber
+           9
+   NodalForce
+   2.7777777777777780E-002
+   Node_idx
+           4
+   NodeNumber
+          12
+   NodalForce
+  0.11111111111111112     
+   Node_idx
+           5
+   NodeNumber
+          15
+   NodalForce
+  0.44444444444444448     
+   Node_idx
+           6
+   NodeNumber
+          18
+   NodalForce
+  0.11111111111111112     
+   Node_idx
+           7
+   NodeNumber
+          21
+   NodalForce
+   2.7777777777777780E-002
+   Node_idx
+           8
+   NodeNumber
+          24
+   NodalForce
+  0.11111111111111112     
+   Node_idx
+           9
+   NodeNumber
+          27
+   NodalForce
+   2.7777777777777780E-002
+
+Solver:
+  Solver index = 1
+
+Solver pre-solve:
+
+Solver equations solve:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 0
+  Function Norm =   0.50000000000000000
+  Newton solver information:
+    Number of function evaluations = 1
+    Number of Jacobian evaluations = 0
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 1
+  Function Norm =   0.24513253227320600
+  Newton solver information:
+    Number of function evaluations = 81
+    Number of Jacobian evaluations = 0
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 2
+  Function Norm =    2.0156690570984893E-002
+  Newton solver information:
+    Number of function evaluations = 161
+    Number of Jacobian evaluations = 0
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 3
+  Function Norm =    4.0058196303154641E-005
+  Newton solver information:
+    Number of function evaluations = 241
+    Number of Jacobian evaluations = 0
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 4
+  Function Norm =    1.1393809840880751E-010
+  Newton solver information:
+    Number of function evaluations = 321
+    Number of Jacobian evaluations = 0
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 5
+  Function Norm =    5.3921394027413273E-015
+  Newton solver information:
+    Number of function evaluations = 401
+    Number of Jacobian evaluations = 0
+
+Solver post-solve:
+
+Solver:
+  Solver index = 1
+
+Solver pre-solve:
+
+Solver equations solve:
+
+Solver pre-residual:
+
+Solver post-residual:
+
+Nonlinear solve monitor:
+
+  Iteration number = 0
+  Function Norm =    5.3921394027413273E-015
+  Newton solver information:
+    Number of function evaluations = 402
+    Number of Jacobian evaluations = 0
+
+Solver post-solve:
+Program successfully completed.

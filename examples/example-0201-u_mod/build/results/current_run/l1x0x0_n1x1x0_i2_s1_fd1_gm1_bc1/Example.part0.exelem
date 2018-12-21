@@ -1,0 +1,355 @@
+ Group name: Region
+ Shape.  Dimension=2
+ #Scale factor sets= 2
+ q.Lagrange*q.Lagrange, #Scale factors=9
+ l.Lagrange*l.Lagrange, #Scale factors=4
+ #Nodes=           9
+ #Fields=8
+ 1) Geometry, coordinate, rectangular cartesian, #Components=2
+   x.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   y.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+ 2) Fibre, anatomical, fibre, #Components=2
+   1.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   2.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+ 3) Dependent, field,  rectangular cartesian, #Components=3
+   1.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   2.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   3.   l.Lagrange*l.Lagrange, no modify, standard node based.
+     #Nodes= 4
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:   10
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:   11
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:   12
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:   13
+ 4) Derivative, field,  rectangular cartesian, #Components=3
+   1.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   2.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   3.   l.Lagrange*l.Lagrange, no modify, standard node based.
+     #Nodes= 4
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:   10
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:   11
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:   12
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:   13
+ 5) Material, field,  rectangular cartesian, #Components=2
+   1.   constant*constant, no modify, grid based.
+     #xi1=0, #xi2=0
+   2.   constant*constant, no modify, grid based.
+     #xi1=0, #xi2=0
+ 6) Density, field,  real, #Components=1
+   1.   constant*constant, no modify, grid based.
+     #xi1=0, #xi2=0
+ 7) Gravity, field,  rectangular cartesian, #Components=2
+   1.   constant*constant, no modify, grid based.
+     #xi1=0, #xi2=0
+   2.   constant*constant, no modify, grid based.
+     #xi1=0, #xi2=0
+ 8) DeformedGeometry, coordinate, rectangular cartesian, #Components=2
+   x.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+   y.   q.Lagrange*q.Lagrange, no modify, standard node based.
+     #Nodes= 9
+     1.  #Values=1
+      Value indices:     1
+      Scale factor indices:    1
+     2.  #Values=1
+      Value indices:     1
+      Scale factor indices:    2
+     3.  #Values=1
+      Value indices:     1
+      Scale factor indices:    3
+     4.  #Values=1
+      Value indices:     1
+      Scale factor indices:    4
+     5.  #Values=1
+      Value indices:     1
+      Scale factor indices:    5
+     6.  #Values=1
+      Value indices:     1
+      Scale factor indices:    6
+     7.  #Values=1
+      Value indices:     1
+      Scale factor indices:    7
+     8.  #Values=1
+      Value indices:     1
+      Scale factor indices:    8
+     9.  #Values=1
+      Value indices:     1
+      Scale factor indices:    9
+ Element:            1 0 0
+   Values:
+     1.7850000000000001E+01
+     0.0000000000000000E+00
+     0.0000000000000000E+00
+     0.0000000000000000E+00
+     0.0000000000000000E+00
+   Nodes:
+           1           2           3           4           5           6           7           8           9
+   Scale factors:
+     1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00
+     1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00   1.0000000000000000E+00
