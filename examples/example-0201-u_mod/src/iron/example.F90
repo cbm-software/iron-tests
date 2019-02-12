@@ -113,8 +113,8 @@ PROGRAM FORTRANEXAMPLE
   INTEGER(CMISSIntg) :: EquationsSetIndex
   INTEGER(CMISSIntg) :: NumberOfComputationalNodes,NumberOfDomains,ComputationalNodeNumber
   INTEGER(CMISSIntg) :: NodeNumber,NodeDomain,node_idx,node_idx_2,component_idx,deriv_idx,NumberOfNodes
-  INTEGER(CMISSIntg),ALLOCATABLE :: LeftSurfaceNodes(:),RightSurfaceNodes(:)
-  INTEGER(CMISSIntg) :: LeftNormalXi,RightNormalXi
+  INTEGER(CMISSIntg),ALLOCATABLE :: LeftSurfaceNodes(:),RightSurfaceNodes(:),FrontSurfaceNodes(:),BackSurfaceNodes(:)
+  INTEGER(CMISSIntg) :: LeftNormalXi,RightNormalXi,FrontNormalXi,BackNormalXi
   INTEGER(CMISSIntg) :: NumberOfArguments,ArgumentLength,ArgStatus
   CHARACTER(LEN=255) :: CommandArgument,filename
 
@@ -122,7 +122,6 @@ PROGRAM FORTRANEXAMPLE
   ! consistent nodal forces stuff
   INTEGER(CMISSIntg)  :: numNodesX,numNodesY,numNodesZ,numNodesXY,numNodesXZ,numNodesYZ
   REAL(CMISSRP)       :: weight
-
 
 
   ! CMISS variables
@@ -169,6 +168,11 @@ PROGRAM FORTRANEXAMPLE
   INTEGER(CMISSIntg)                    :: ElementIdx,NodeIdx,ComponentIdx,CurrentPatchID,StartIdx,StopIdx
   REAL(CMISSRP)                         :: x,y,z
 
+  ! stretch transformation with generated mesh system of coordinates (2D)
+  ! x = transfoX(1)*X+transfoX(2)
+  ! y = ...
+  REAL(CMISSRP)                         :: transfoX(2), transfoY(2)
+
 #ifdef WIN32
   !Quickwin type
   LOGICAL :: QUICKWIN_STATUS=.FALSE.
@@ -194,10 +198,16 @@ PROGRAM FORTRANEXAMPLE
   ! Diagnostics
   ! Write down F:
   !CALL cmfe_DiagnosticsSetOn(CMFE_IN_DIAG_TYPE,[1,2,3,4,5],"Diagnostics",["FiniteElasticity_GaussDeformationGradientTensor"],Err)
-  ! Write down F:
-  CALL cmfe_DiagnosticsSetOn(CMFE_IN_DIAG_TYPE,[1,2,3,4,5],"Diagnostics",["FINITE_ELASTICITY_GAUSS_STRESS_TENSOR"],Err)
+  ! Write down S and sigma:
+  !CALL cmfe_DiagnosticsSetOn(CMFE_IN_DIAG_TYPE,[1,2,3,4,5],"Diagnostics",["FINITE_ELASTICITY_GAUSS_STRESS_TENSOR"],Err)
+  ! Write down residual AND above:
+  CALL cmfe_DiagnosticsSetOn(CMFE_IN_DIAG_TYPE,[1,2,3,4,5],"Diagnostics",[&!"FiniteElasticity_FiniteElementResidualEvaluate",&
+   ! &                                                                     "FINITE_ELASTICITY_GAUSS_STRESS_TENSOR         ",&
+    &                                                                     "BoundaryConditions_NeumannIntegrate           "],Err)
+  ! Write down scalings:
+  !CALL cmfe_DiagnosticsSetOn(CMFE_IN_DIAG_TYPE,[1,2,3,4,5],"Diagnostics_scaling",["FIELD_SCALINGS_CALCULATE"],Err)
 
-!!!!!!!! Command Line Interface !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!! Command Line Interface !!!!!!!!!!!!!!!!!!!!!!!!!!
   NUMBER_OF_ARGUMENTS = COMMAND_ARGUMENT_COUNT()
 ! Get only bc
   IF(NUMBER_OF_ARGUMENTS == 1) THEN
@@ -279,7 +289,7 @@ PROGRAM FORTRANEXAMPLE
     LENGTH                        = 0.2_CMISSRP
     NumberGlobalXElements         = 2!2!1
     NumberGlobalYElements         = 1!2!1
-    NumberGlobalZElements         = 0!1!2!1
+    NumberGlobalZElements         = 1!1!2!1
     SolverIsDirect                = 1 ! direct solver by default
     JACOBIAN_FD                   = 1 ! finite-difference Jacobian by default
     MooneyRivlin1                 = 35.7_CMISSRP*0.5_CMISSRP ! see note above for Neo-Hookean solid
@@ -668,8 +678,14 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_BoundaryConditions_NeumannSparsityTypeSet(BoundaryConditions,CMFE_BOUNDARY_CONDITION_SPARSE_MATRICES,Err)
 
   IF(useGeneratedMesh==1) THEN
-    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_LEFT_SURFACE,LeftSurfaceNodes,LeftNormalXi,Err)
-    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE,RightSurfaceNodes,RightNormalXi,Err)
+    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_LEFT_SURFACE, &
+      & LeftSurfaceNodes,LeftNormalXi,Err)
+    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE, &
+      & RightSurfaceNodes,RightNormalXi,Err)
+    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_FRONT_SURFACE, &
+      & FrontSurfaceNodes,FrontNormalXi,Err)
+    CALL cmfe_GeneratedMesh_SurfaceGet(GeneratedMesh,CMFE_GENERATED_MESH_REGULAR_BACK_SURFACE, &
+      & BackSurfaceNodes,BackNormalXi,Err)
 
     ! Dirichlet BC at x=0
     DO node_idx=1,SIZE(LeftSurfaceNodes,1)
@@ -684,8 +700,12 @@ PROGRAM FORTRANEXAMPLE
 
     WRITE(*,*) "LeftSurfaceNodes are "
     WRITE(*,*) LeftSurfaceNodes
+    WRITE(*,*) "FrontSurfaceNodes are "
+    WRITE(*,*) FrontSurfaceNodes
+    WRITE(*,*) "BackSurfaceNodes are "
+    WRITE(*,*) BackSurfaceNodes
 
-    ! Dirichlet BC at x=0, y=ly/2, z=z/2
+    ! Dirichlet BC at x=0, y=ly/2, z=lz/2
     NodeNumber=(NumberOfNodes/2)+1-((2*NumberGlobalXElements+1)/2) ! implicit FLOOR() !!!
 
     WRITE(*,*) "Fixed one"
@@ -706,15 +726,48 @@ PROGRAM FORTRANEXAMPLE
     CASE(0)
       WRITE(*,*) "Applying displacement BC.."
       ! Dirichlet BC at x=lx
+      ! x1 = transfoX(1)*X1+transfoX(2)
+      ! transfoX(1) = lambda
+      ! transfoX(2) = 0
       DO node_idx=1,SIZE(RightSurfaceNodes,1)
         NodeNumber=RightSurfaceNodes(node_idx)
         CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
         IF(NodeDomain==ComputationalNodeNumber) THEN
-          ! constrain x-direction
+          ! constrain x-direction 
           CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
             & 1,CMFE_BOUNDARY_CONDITION_FIXED,WIDTH*lambda,Err)
-        ENDIF
-      ENDDO
+        END IF
+      END DO
+
+      ! also add conditions on back(=up) OR front(=down) surfaces (pleonastic: just verifying correctness)
+      IF (numberOfDimensions == 2) THEN
+      ! x2 = transfoY(1)*X2+transfoY(2)
+        transfoY(1) = 1.0_CMISSRP/lambda
+        transfoY(2) = HEIGHT*(1.0_CMISSRP/2.0_CMISSRP)*(1.0_CMISSRP-1.0_CMISSRP/lambda)
+
+        DO node_idx=1,SIZE(BackSurfaceNodes,1)
+          NodeNumber=BackSurfaceNodes(node_idx)
+          CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+          IF(NodeDomain==ComputationalNodeNumber) THEN
+          ! constrain y-direction 
+            CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+              & 2,CMFE_BOUNDARY_CONDITION_FIXED,HEIGHT*transfoY(1)+transfoY(2),Err)
+          END IF
+        END DO
+
+        ! APPLY ONLY ONE OF THE TWO!!!
+        !DO node_idx=1,SIZE(FrontSurfaceNodes,1)
+        !  NodeNumber=FrontSurfaceNodes(node_idx)
+        ! CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+        !  IF(NodeDomain==ComputationalNodeNumber) THEN
+          ! constrain y-direction 
+        !    CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,NodeNumber, &
+        !      & 2,CMFE_BOUNDARY_CONDITION_FIXED,transfoY(2),Err)
+        !  END IF
+        !END DO
+
+      END IF
+
     CASE(1)
       WRITE(*,*) "Applying traction BC.."
       ! corresponding traction value
@@ -754,20 +807,60 @@ PROGRAM FORTRANEXAMPLE
       ENDDO
     CASE (2)
       ! corresponding traction value
-      NeumannBCvalue = appliedForce !* HEIGHT * LENGTH
-      WRITE(*,*) "  applying NEUMANN POINT forces"
+
+      ! Integration occurs in actual configuration!!!
+      IF (numberOfDimensions == 2) THEN
+        NeumannBCvalue = 2.0_CMISSRP* MooneyRivlin1*(lambda*lambda-1.0_CMISSRP / (lambda * lambda))
+      ELSE ! 3D
+        NeumannBCvalue = 2.0_CMISSRP* MooneyRivlin1*(lambda*lambda-1.0_CMISSRP / lambda)
+      END IF
+
+      WRITE(*,*) "  applying NEUMANN_POINT forces"
       ! apply point forces, Neumann BC at x=lx
+
       DO NodeIdx=1,SIZE(RightSurfaceNodes,1)
         NodeNumber=RightSurfaceNodes(NodeIdx)
         CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
         IF(NodeDomain==ComputationalNodeNumber) THEN
-          ! cmfe_BoundaryConditions_SetNode??????????????????????  
-          ! CMFE_BOUNDARY_CONDITION_NEUMANN_POINT_INCREMENTED does not change
+          ! cmfe_BoundaryConditions_SetNode vs. AddNode
+          ! Set 1/2*force, then add same (to play around with set/add)
+          CALL cmfe_BoundaryConditions_SetNode(BoundaryConditions,DependentField, &
+            & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
+            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue/2.0_CMISSRP,Err)
           CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
             & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
-            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue,Err)
+            & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_POINT,NeumannBCvalue/2.0_CMISSRP,Err)
         END IF
       END DO
+
+! CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED and ..._ONLY : sets/adds the value of the already integrated flux on rhs
+! CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED_ONLY : additionally prevents integration on that line/face
+! cmfe_BoundaryConditions_AddNode : adds a value 
+! cmfe_BoundaryConditions_SetNode : sets a value (replacing what was before)
+! Set/Add happen according to
+! FIELD_SET_TYPE : add directly value to rhs
+! FIELD_BC_SET_TYPE : will be integrated THEN added to rhs
+! Only BOUNDARY_CONDITION_DOF_FIXED are Dirichlet (=eliminated rows)!!! Cf.:
+! IF(BOUNDARY_CONDITION_VARIABLE%DOF_TYPES(dof_idx)==BOUNDARY_CONDITION_DOF_FIXED) THEN
+!   BOUNDARY_CONDITIONS_DIRICHLET%DIRICHLET_DOF_INDICES(dirichlet_idx)=dof_idx
+!   dirichlet_idx=dirichlet_idx+1
+
+      ! Set integrated-only conditions (flux=0.) at the nodes that are NOT Neumann Nodes
+      ! Otherwise the Neumann Matrix is filled where it should not be in case of distributed force (see diagnostic)!!! 
+      WRITE(*,*) "  applying 0 NEUMANN_INTEGRATED_ONLY  forces"
+      DO NodeNumber=1,NumberOfNodes
+        IF (.NOT.ANY(RightSurfaceNodes==NodeNumber)) THEN
+          CALL cmfe_Decomposition_NodeDomainGet(Decomposition,NodeNumber,1,NodeDomain,Err)
+          IF(NodeDomain==ComputationalNodeNumber) THEN
+            ! Use add since Dirichlet conditions might be nonzero
+            ! and set would replace these values
+            CALL cmfe_BoundaryConditions_AddNode(BoundaryConditions,DependentField, &
+              & CMFE_FIELD_DELUDELN_VARIABLE_TYPE,1,1,NodeNumber, &
+              & 1,CMFE_BOUNDARY_CONDITION_NEUMANN_INTEGRATED_ONLY,0.0_CMISSRP,Err)
+          END IF
+        END IF
+      END DO
+
     CASE DEFAULT
       CALL HANDLE_ERROR("Error for BC!")
     END SELECT 

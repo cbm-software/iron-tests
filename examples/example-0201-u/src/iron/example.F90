@@ -252,16 +252,16 @@ PROGRAM FORTRANEXAMPLE
     WIDTH                         = 1.0_CMISSRP
     HEIGHT                        = 0.2_CMISSRP
     LENGTH                        = 0.2_CMISSRP
-    NumberGlobalXElements         = 2
-    NumberGlobalYElements         = 2
-    NumberGlobalZElements         = 2
+    NumberGlobalXElements         = 2!1
+    NumberGlobalYElements         = 2!1
+    NumberGlobalZElements         = 2!1
     SolverIsDirect                = 1 ! direct solver by default
     JACOBIAN_FD                   = 1 ! finite-difference Jacobian by default
     MooneyRivlin1                 = 0.5_CMISSRP*35.7_CMISSRP ! see note above for Neo-Hookean solid
     MooneyRivlin2                 = 0.0_CMISSRP  ! If MooneyRivlin2 == 0 --> Neo-Hookean solid
     useGeneratedMesh              = 1 ! generated mesh by default
     BCDISP_MAX                    = 0.2_CMISSRP
-    bcDirichlet                   = 1 ! Dirichlet BC by default
+    bcDirichlet                   = 2 ! Dirichlet BC by default
   ENDIF
   IF(NumberGlobalZElements >= 1) THEN
     NumberOfDimensions  = 3
@@ -542,7 +542,8 @@ PROGRAM FORTRANEXAMPLE
   CALL cmfe_Equations_Initialise(Equations,Err)
   CALL cmfe_EquationsSet_EquationsCreateStart(EquationsSet,Equations,Err)
   CALL cmfe_Equations_SparsityTypeSet(Equations,CMFE_EQUATIONS_SPARSE_MATRICES,Err)
-  CALL cmfe_Equations_OutputTypeSet(Equations,CMFE_EQUATIONS_NO_OUTPUT,Err)
+!  CALL cmfe_Equations_OutputTypeSet(Equations,CMFE_EQUATIONS_NO_OUTPUT,Err)
+  CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_MATRIX_OUTPUT,err) 
   CALL cmfe_EquationsSet_EquationsCreateFinish(EquationsSet,Err)
 
   !Initialise dependent field from undeformed geometry and displacement bcs and set hydrostatic pressure
@@ -652,7 +653,7 @@ PROGRAM FORTRANEXAMPLE
       ! corresponding traction value
       NeumannBCvalue = 2.0_CMISSRP * MooneyRivlin1 * (lambda - 1.0_CMISSRP / lambda / lambda) * HEIGHT * LENGTH
       WRITE(*,*) "  getting nodal weights"
-      ! compute consistent nodal weights
+      ! compute consistent nodal weights (mesh_reader function!)
       CALL GeneratedMesh_SurfaceWeightsGet(nodalWeights,CMFE_GENERATED_MESH_REGULAR_RIGHT_SURFACE, &
         & numberGlobalXelements,numberGlobalYelements,numberGlobalZelements,Err)
       WRITE(*,*) "  applying consistent nodal forces"
